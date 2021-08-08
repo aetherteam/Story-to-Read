@@ -1,5 +1,9 @@
 # Logs
-/logs
+*/logs
+
+# Dev dirs
+
+*/node_modules
 
 # Dev Files
 *.xmind
