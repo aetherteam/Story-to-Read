@@ -4,6 +4,8 @@
   --primary: #ff51f4;
   --highlight: #27212e;
   --secondary-text: #c4c4c4;
+  --dark-shadow: 0px 0px 10px 0px #201722;
+  --pink-shadow: 0px 0px 10px 0px #ff51f4;
 }
 /* 
 * Font: Roboto
@@ -43,6 +45,7 @@ body {
   border-radius: 20px;
   display: flex;
   text-decoration: none;
+  box-shadow: var(--dark-shadow);
 }
 .logo__image {
   width: 100%;
@@ -139,6 +142,7 @@ body {
   overflow: hidden;
   padding: 10px;
   box-sizing: border-box;
+  box-shadow: 0px 0px 10px 0px #201722;
 }
 
 .rightcol {
@@ -196,6 +200,7 @@ body {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  box-shadow: var(--dark-shadow);
 }
 
 .book__preview__image {
@@ -218,6 +223,7 @@ body {
   padding: 20px;
   flex-direction: column;
   box-sizing: border-box;
+  box-shadow: var(--dark-shadow);
 }
 
 .book__preview__content__info {
