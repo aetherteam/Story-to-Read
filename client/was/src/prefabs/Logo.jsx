@@ -1,8 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Logo() {
   return (
-    <div className="logo__wrapper">
+    <Link to="/" className="logo__wrapper">
       <div className="logo__wrapper--left">
         <img alt="" src="./icons/logo.png" className="logo__image" />
       </div>
@@ -10,6 +11,6 @@ export default function Logo() {
         <h2 className="logo__title">Write and Share</h2>
         <span className="logo__phrase">Пиши и делись!</span>
       </div>
-    </div>
+    </Link>
   );
 }

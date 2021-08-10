@@ -13,9 +13,11 @@ import reportWebVitals from './reportWebVitals';
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  Link
 } from "react-router-dom";
 import Logo from './prefabs/Logo';
+import BookPreview from './prefabs/BookPreview';
 
 
 ReactDOM.render(
@@ -42,7 +44,7 @@ ReactDOM.render(
             </div>
             <div className="centercol">
               <div className="centercol__content">
-
+                <BookPreview />
               </div>
             </div>
             <div className="rightcol">

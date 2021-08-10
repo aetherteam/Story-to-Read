@@ -1,13 +1,18 @@
 :root {
-  --main_background: #111;
-  --block_background: #232323;
-  --primary: #fb0d8d;
-  --primary_dark: #2f0c29;
+  --main_background: #19121c;
+  --block_background: #201a24;
+  --primary: #ff51f4;
+  --highlight: #27212e;
+  --secondary-text: #c4c4c4;
 }
 /* 
 * Font: Roboto
 *   Available weights: 100, 300, 500
 */
+
+* {
+  font-family: "Roboto", sans-serif;
+}
 
 #root {
   width: 100%;
@@ -37,6 +42,7 @@ body {
   background-color: var(--block_background);
   border-radius: 20px;
   display: flex;
+  text-decoration: none;
 }
 .logo__image {
   width: 100%;
@@ -104,26 +110,35 @@ body {
   font-size: 16px;
 }
 
-.col__link__active {
-  background-color: var(--primary_dark);
+.col__link__active .col__link__text {
+  color: var(--primary);
 }
-
-.col__link:hover {
-  background-color: var(--primary_dark);
-  box-shadow: 0px 0px 10px 0px var(--primary);
+.col__link__image {
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(165deg)
+    brightness(101%) contrast(102%);
+}
+.col__link__active .col__link__image,
+.col__link:hover .col__link__image {
+  filter: invert(44%) sepia(98%) saturate(1778%) hue-rotate(285deg)
+    brightness(108%) contrast(107%);
+}
+.col__link:hover .col__link__text {
+  color: var(--primary);
 }
 
 .centercol {
   width: 800px;
-  height: calc(100vh - 20px);
+  height: calc(100vh - 10px);
 }
 
 .centercol__content {
   background-color: var(--block_background);
   width: 100%;
   height: 100%;
-  border-radius: 20px;
+  border-radius: 20px 20px 0 0;
   overflow: hidden;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .rightcol {
@@ -146,7 +161,8 @@ body {
   text-overflow: ellipsis;
 }
 .rightcol__user__info {
-  height: 100%;width: 100%;
+  height: 100%;
+  width: 100%;
   backdrop-filter: brightness(0.5);
   display: flex;
   flex-direction: column;
@@ -164,4 +180,118 @@ body {
 }
 .rightcol__reading__stats--bolder {
   font-weight: 500;
+}
+
+.book__preview__wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.book__preview__image__wrapper {
+  width: 180px;
+  height: 280px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.book__preview__image {
+  height: 100%;
+  transition: 0.3s ease;
+}
+
+.book__preview__image__wrapper:hover .book__preview__image {
+  height: 110%;
+  filter: brightness(0.7);
+}
+
+.book__preview__content {
+  width: 590px;
+  height: 280px;
+  background-color: var(--highlight);
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.book__preview__content__info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.book__preview__title {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  width: 550px;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book__preview__author {
+  color: var(--secondary-text);
+  text-decoration: none;
+  font-size: 12px;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book__preview__content__genres {
+  display: flex;
+  justify-content: start;
+  gap: 10px;
+  flex-wrap: wrap;
+  overflow: hidden;
+  max-height: 50px;
+}
+.genre_link {
+  display: inline-block;
+  background-color: #424242;
+  height: 20px;
+  padding: 0 10px;
+  line-height: 20px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  font-size: 10px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+.book__preview__content_description {
+  max-height: 100px;
+  font-size: 12px;
+  color: #fff;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.book__preview__content__button {
+  height: 30px;
+  width: 150px;
+  border: 1px solid var(--primary);
+  border-radius: 20px;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+  text-decoration: none;
+}
+.book__preview__content__button:hover {
+  background-color: var(--primary);
+  color: #fff;
 }
