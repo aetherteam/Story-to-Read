@@ -14,5 +14,5 @@ This is a unique project, of which there are few in its kind.
 
 ## Developers
 
-[EugeneKannou](github.com/eugenekannou) — project founder, developer.
-[VarySi](github.com/memUsins) — project founder, developer, designer.
+[EugeneKannou](https://github.com/eugenekannou) — project founder, developer.
+[VarySi](https://github.com/memUsins) — project founder, developer, designer.
