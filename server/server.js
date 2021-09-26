@@ -11,11 +11,12 @@ fastify.register(require("fastify-formbody"), {
 // fastify.register(require('fastify-multipart'))
 
 // Declare a route
-fastify.register(require("./routes/user"));
+fastify.register(require("./routes/auth.js"));
 
 // Run the server!
 module.exports.start = async (port) => {
   try {
+    console.log("Server listening at port " + port);
     await fastify.listen(port);
   } catch (err) {
     fastify.log.error(err);
