@@ -26,5 +26,12 @@ module.exports = {
 
         console.log("[Validation] passwords are not match");
         return false;
+    },
+    bookDescription: function (description) {
+        console.log("[Validation] description is too long");
+        return (description.length < 400);
+    },
+    chapterContent: function (chapterContent) {
+        return (chapterContent.length > 10 && chapterContent.length < 10000)
     }
 }

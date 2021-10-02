@@ -16,9 +16,9 @@ async function routes(fastify, options) {
 		}
 	})
 	fastify.get('/auth/login/:login/:password/', async (request, reply) => {
-		const lp = request.params;
+		const rp = request.params;
 		
-		const userLoginStatus = await auth.login(lp.login, lp.password);
+		const userLoginStatus = await auth.login(rp.login, rp.password);
 
 		if (userLoginStatus) {
 			reply

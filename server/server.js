@@ -12,6 +12,8 @@ fastify.register(require("fastify-formbody"), {
 
 // Declare a route
 fastify.register(require("./routes/auth.js"));
+fastify.register(require("./routes/book.js"));
+fastify.register(require("./routes/chapter.js"));
 
 // Run the server!
 module.exports.start = async (port) => {
