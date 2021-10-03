@@ -1,6 +1,9 @@
 const { MongoClient } = require("mongodb");
 
 module.exports = {
+    connect: async function() {
+        return await connect();
+    },
     connectWithUsersCollection: async function () {
         return await connectWithUserCollection();
     },

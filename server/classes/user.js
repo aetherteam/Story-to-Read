@@ -1,5 +1,8 @@
 const mongo = require('../utils/mongodb.js');
-
+const fs = require('fs');
+//todo: create easy get function that returns everything but the statistics objects;
+// OR
+// add excepted fields to functions
 module.exports = {
     create: async function (username, nickname, email, password) {
         const usersCollection = await mongo.connectWithUsersCollection();
@@ -45,9 +48,27 @@ module.exports = {
     getUserWithKey: async function (key) {
         const usersCollection = await mongo.connectWithUsersCollection();
 
-        const user = usersCollection.findOne({"key": key});
+        const userID = usersCollection.findOne({ "key": key }, { _id: 1 });
+
+        const user = await module.exports.get(userID);
 
         if (user) return user;
+        return false;
+    },
+    get: async function (id) {
+        const usersCollection = await mongo.connectWithUsersCollection();
+
+        let user = await usersCollection.findOne({ "_id": id }, { projection: { password: 0, email: 0, confirmed: 0, key: 0 }});
+
+        if (user) {
+            if (fs.existsSync(`./uploads/avatars/${id}.png`)) {
+                user.avatar = `./uploads/avatars/${id}.png`;
+            }
+            else {
+                user.avatar = `./uploads/avatars/regular.png`;
+            }
+            return user;
+        }
         return false;
     }
 }

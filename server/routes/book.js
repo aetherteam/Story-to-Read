@@ -4,12 +4,11 @@ const keyToId = require('../decorators/keyToId.js');
 let create = async (request, userID) => {
     const rp = request.body;
     const result = await Book.create(rp.name, [], rp.genres, rp.description, userID);
-
 }
 
 async function routes(fastify, options) {
     fastify.post('/book/create/', async (request, reply) => {
-        const result = keyToId(create, request);
+        const result = await keyToId(create, request);
 
         if (result) {
             reply.code(200).send({ "success": true, "bookID": result._id });
