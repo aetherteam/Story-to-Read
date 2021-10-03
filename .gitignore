@@ -3,6 +3,7 @@
 
 # Dev dirs
 */node_modules
+*/uploads/*
 
 # Dev Files
 *.xmind

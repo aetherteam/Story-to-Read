@@ -7,13 +7,12 @@ const qs = require("qs");
 fastify.register(require("fastify-formbody"), {
   parser: (str) => qs.parse(str),
 });
+fastify.register(require('fastify-multipart'), { attachFieldsToBody: true });
 
-// fastify.register(require('fastify-multipart'))
-
-// Declare a route
 fastify.register(require("./routes/auth.js"));
 fastify.register(require("./routes/book.js"));
 fastify.register(require("./routes/chapter.js"));
+fastify.register(require("./routes/uploads.js"));
 
 // Run the server!
 module.exports.start = async (port) => {
