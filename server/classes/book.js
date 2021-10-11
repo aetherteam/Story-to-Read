@@ -3,6 +3,7 @@ const mongo = require('../utils/mongodb.js');
 const validation = require('../utils/validation');
 const Genres = require('./genres.js');
 const User = require('./user.js');
+const results = require('../utils/results.js');
 
 // const globalConfig = require('../utils/globalConfig.json');
 
@@ -12,8 +13,8 @@ module.exports = {
         const booksCollection = await mongo.connectWithBooksCollection();
 
         if (!validation.bookDescription(description) || !validation.basic(name)) {
-            console.log("[Book] parameters are wrong")
-            return false;
+            console.error("[Book] parameters are wrong")
+            return results.error("Some parameters are invalid", 400)
         }
 
         const _id = await mongo.getIDForNewEntry("books");
@@ -32,10 +33,10 @@ module.exports = {
 
         if (result) {
             console.log("[Book] created")
-            return book;
+            return results.successWithData(book);
         }
-        console.log("[Book] everything fucked up")
-        return false;
+
+        return results.error("Unexpected error", 500);
     },
     checkOwnership: async function (bookID, userID) {
         const booksCollection = await mongo.connectWithBooksCollection();
@@ -90,6 +91,10 @@ module.exports = {
 
         let book = await booksCollection.findOne({ "_id": parseInt(bookID) });
 
+        if (!book) {
+            return results.error("Book not found", 400)
+        }
+
         let chapters = [];
         await book.chapters.forEach(async (chapterID) => {
             let k = await module.exports.getChapterInfo(chapterID);
@@ -115,6 +120,6 @@ module.exports = {
         book.genres = genres;
         book.author = author;
 
-        return book;
+        return results.successWithData(book);
     }
 }

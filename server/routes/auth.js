@@ -1,40 +1,33 @@
-const auth = require('../classes/auth.js')
+const auth = require("../classes/auth.js");
 
 async function routes(fastify, options) {
-	fastify.post('/auth/registration/', async (request, reply) => {
-		const rp = request.body;
-		const userRegStatus = await auth.registration(rp.email, rp.password, rp.passwordConfirmation, rp.username, rp.nickname);
+    fastify.post("/auth/registration/", async (request, reply) => {
+        const rp = request.body;
+        const result = await auth.registration(
+            rp.email,
+            rp.password,
+            rp.passwordConfirmation,
+            rp.username,
+            rp.nickname
+        );
 
-		if (userRegStatus != false) {
-			reply.code(200).send({ "success": true })
-		}
-		else if (userRegStatus === "userExists") {
-			reply.code(422).send({ "success": false, "message": "User already exists" })
-		}
-		else {
-			reply.code(500).send({ "success": false, "message": "Internal server error" })
-		}
-	})
-	fastify.get('/auth/login/:login/:password/', async (request, reply) => {
-		const rp = request.params;
-		
-		const userLoginStatus = await auth.login(rp.login, rp.password);
+        if (result.success) {
+            reply.code(200).send({ data: result.data });
+        } else {
+            reply.code(result.code).send({ message: result.message });
+        }
+    });
+    fastify.get("/auth/login/:login/:password/", async (request, reply) => {
+        const rp = request.params;
 
-		if (userLoginStatus) {
-			reply
-				.code(200)
-				.send({
-					"success": true,
-					"userData": {
-						"id": userLoginStatus.id,
-						"key": userLoginStatus.key
-					}
-				})
-		}
-		else {
-			reply.code(500).send({ "success": false })
-		}
-	})
+        const result = await auth.login(rp.login, rp.password);
+
+        if (result.success) {
+            reply.code(200).send({ data: result.data });
+        } else {
+            reply.code(result.code).send({ message: result.message });
+        }
+    });
 }
 
 module.exports = routes;
