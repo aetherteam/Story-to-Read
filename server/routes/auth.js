@@ -14,7 +14,9 @@ async function routes(fastify, options) {
         if (result.success) {
             reply.code(200).send({ data: result.data });
         } else {
-            reply.code(result.code).send({ message: result.message });
+            reply
+                .code(result.code)
+                .send({ success: false, message: result.message });
         }
     });
     fastify.get("/auth/login/:login/:password/", async (request, reply) => {

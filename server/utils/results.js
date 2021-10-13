@@ -7,7 +7,15 @@ module.exports = {
       message: text,
     };
   },
-  successWithData: function (result) {
+  unexpectedError: function () {
+    console.error(text);
+    return {
+      success: false,
+      code: 500,
+      message: "Unexpected error"
+    };
+  },
+  successWithData: function (data) {
     return {
       success: true,
       data
