@@ -10,7 +10,7 @@ async function routes(fastify, options) {
 
         if (user.success) {
             reply.code(200).send({ data: user.data });
-        } else reply.code(user.code).send({success: false, message: user.message});
+        } else reply.code(user.code).send({ user });
     });
 }
 

@@ -12,11 +12,11 @@ async function routes(fastify, options) {
         );
 
         if (result.success) {
-            reply.code(200).send({ data: result.data });
+            reply.code(200).send({ result });
         } else {
             reply
                 .code(result.code)
-                .send({ success: false, message: result.message });
+                .send({ result });
         }
     });
     fastify.get("/auth/login/:login/:password/", async (request, reply) => {
@@ -25,9 +25,9 @@ async function routes(fastify, options) {
         const result = await auth.login(rp.login, rp.password);
 
         if (result.success) {
-            reply.code(200).send({ data: result.data });
+            reply.code(200).send({ result });
         } else {
-            reply.code(result.code).send({ message: result.message });
+            reply.code(result.code).send({ result });
         }
     });
 }

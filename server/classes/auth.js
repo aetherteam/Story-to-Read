@@ -61,6 +61,6 @@ module.exports = {
         return false;
     },
     restore: async function (login) {
-        // password restoration function
+        // TODO: password restoration function
     },
 };

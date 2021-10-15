@@ -1,10 +1,9 @@
 const mongo = require("../utils/mongodb.js");
 const fs = require("fs");
 const results = require("../utils/results");
-//todo: create easy get function that returns everything but the statistics objects;
-// OR
-// add excepted fields to functions
-// todo: use users db only for public info!!!!!!!!!!!!!!!!!!!!!!
+
+// TODO: create easy get function that returns everything but the statistics objects;
+
 module.exports = {
     create: async function (username, nickname, email, password) {
         const usersCollection = await mongo.connectWithUsersCollection();
@@ -66,7 +65,7 @@ module.exports = {
     get: async function (id, fields) {
         const usersCollection = await mongo.connectWithUsersCollection();
 
-        if (!fields) fields = ["username", "nickname", "avatar"];
+        if (!fields) fields = ["username", "nickname", "avatar"]; // default value
 
         let projection = { _id: id };
 
@@ -91,7 +90,6 @@ module.exports = {
             return results.successWithData(user);
         }
 
-        //todo: add fields parameter
         return results.error("User not found", 400);
     },
     getMultipleUsers: async function () {

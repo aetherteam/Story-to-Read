@@ -4,7 +4,7 @@ module.exports = {
     return {
       success: false,
       code,
-      message: text,
+      error: text,
     };
   },
   unexpectedError: function () {
@@ -12,16 +12,17 @@ module.exports = {
     return {
       success: false,
       code: 500,
-      message: "Unexpected error"
+      error: "Unexpected error"
     };
   },
   successWithData: function (data) {
     return {
       success: true,
+      code: 200,
       data
     };
   },
   success: function () {
-    return { success: true };
+    return { success: true, code: 200 };
   },
 };

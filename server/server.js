@@ -5,9 +5,12 @@ const qs = require("qs");
 
 // Content Parser
 fastify.register(require("fastify-formbody"), {
-  parser: (str) => qs.parse(str),
+    parser: (str) => qs.parse(str),
 });
-fastify.register(require('fastify-multipart'), { attachFieldsToBody: true });
+fastify.register(require("fastify-multipart"), {
+    attachFieldsToBody: true,
+    limits: { fileSize: 3000000 },
+});
 
 fastify.register(require("./routes/auth.js"));
 fastify.register(require("./routes/book.js"));
@@ -16,11 +19,11 @@ fastify.register(require("./routes/user.js"));
 
 // Run the server!
 module.exports.start = async (port) => {
-  try {
-    console.log("Server listening at port " + port);
-    await fastify.listen(port);
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
+    try {
+        console.log("Server listening at port " + port);
+        await fastify.listen(port);
+    } catch (err) {
+        fastify.log.error(err);
+        process.exit(1);
+    }
 };

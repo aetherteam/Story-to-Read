@@ -17,9 +17,9 @@ async function routes(fastify, options) {
         const result = await keyToId(create, request);
 
         if (result.success) {
-            reply.code(200).send({ book: result.data });
+            reply.code(200).send({ result });
         } else {
-            reply.code(result.code).send({ message: result.message });
+            reply.code(result.code).send({ result });
         }
     });
     fastify.get("/book/get/:bookID/", async (request, reply) => {
@@ -28,9 +28,9 @@ async function routes(fastify, options) {
         const result = await Book.get(rp.bookID);
 
         if (result.success) {
-            reply.code(200).send({ data: result.data });
+            reply.code(200).send({ result });
         } else {
-            reply.code(result.code).send({ message: result.message });
+            reply.code(result.code).send({ result });
         }
     });
 }

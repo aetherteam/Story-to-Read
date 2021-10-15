@@ -5,7 +5,7 @@ const Genres = require('./genres.js');
 const User = require('./user.js');
 const results = require('../utils/results.js');
 
-// const globalConfig = require('../utils/globalConfig.json');
+// TODO: const globalConfig = require('../utils/globalConfig.json');
 
 
 module.exports = {
