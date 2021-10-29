@@ -4,7 +4,6 @@ const jimp = require("jimp");
 const User = require("../classes/user");
 const Book = require("../classes/book");
 const { fromBuffer } = require("file-type");
-const results = require("../utils/results");
 
 async function upload(request, reply) {
     try {

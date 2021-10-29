@@ -7,7 +7,6 @@ const results = require('../utils/results.js');
 
 // TODO: const globalConfig = require('../utils/globalConfig.json');
 
-
 module.exports = {
     create: async function (name, chapters = [], genres = [], description = "", author) {
         const booksCollection = await mongo.connectWithBooksCollection();
@@ -47,14 +46,14 @@ module.exports = {
     },
     addChapter: async function (parentID, name, content, userID) {
         const booksCollection = await mongo.connectWithBooksCollection();
-        const haveRights = await module.exports.checkOwnership(parentID, userID);
+        const doUserHaveRights = await module.exports.checkOwnership(parentID, userID);
 
         if (!validation.chapterContent(content) || !validation.basic(name)) {
             console.log("[Chapter] Fields are invalid");
             return false;
         }
 
-        if (!haveRights) {
+        if (!doUserHaveRights) {
             console.error("[Book] User have no rights to create chapter for", parentID);
             return "forbidden";
         }

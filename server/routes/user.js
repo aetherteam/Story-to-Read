@@ -12,6 +12,13 @@ async function routes(fastify, options) {
             reply.code(200).send({ data: user.data });
         } else reply.code(user.code).send({ user });
     });
+    fastify.get("/user/createTempUser", async (request, reply) => {
+        const user = await User.createTempUser();
+
+        if (user.success) {
+            reply.code(200).send({ data: user.data });
+        } else reply.code(user.code).send({ user });
+    });
 }
 
 module.exports = routes;

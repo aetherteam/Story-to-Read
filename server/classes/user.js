@@ -3,38 +3,58 @@ const fs = require("fs");
 const results = require("../utils/results");
 
 // TODO: create easy get function that returns everything but the statistics objects;
+// TODO: create simple OOP structure for User class: public and private methods
+//       public methods should use private ones etc.
+// TODO: user.get public and private functions 
+// TODO: add try/catch to all methods
 
 module.exports = {
-    create: async function (username, nickname, email, password) {
+    create: async function (username, nickname, email, password, tempUser) {
         const usersCollection = await mongo.connectWithUsersCollection();
+        const userID = tempUser.data._id;
+        const userKey = tempUser.data.key
 
-        const _id = await mongo.getIDForNewEntry("users");
-
-        const user = {
+        if (!await compareKeyAndID(userID, userKey)) {return results.error("You are not allowed to create user with that id", 403)}
+        else {console.log("key and id is equal")}
+        
+        let user = {
             username,
             nickname,
             email,
             password,
-            _id: _id,
             confirmed: false,
-            key: generateUserKey(),
+            key: generateUserKey(32),
+            registered: true,
         };
 
-        if (await usersCollection.insertOne(user)) {
-            const userForReturn = await module.exports.get(_id);
-            return results.successWithData(userForReturn);
-        } else return results.error("Unexpected error", 500);
+        try {
+            await usersCollection.updateOne({_id: userID}, {$set: user})
+            const userForReturn = await module.exports.get(userID);
+            return results.successWithData(userForReturn.data);
+        }
+        catch {
+            return results.error("Unexpected error", 500);
+        }
     },
     isExists: async function (query) {
         const usersCollection = await mongo.connectWithUsersCollection();
 
-        if (await usersCollection.findOne(query)) {
-            console.log(
-                `[User] with ${query?.email} ${query?.nickname} parameters exists`
-            );
-            return true;
+        try {
+            const user = await usersCollection.findOne(query);
+            if (user) {
+                console.log(            
+                    `[User] with ${query?.email} ${query?.nickname} parameters exists`
+                );
+                return true;
+            }
+            else {
+                return false;
+            }
         }
-        return false;
+        catch {
+            return results.unexpectedError();
+        }
+        
     },
     findLoginCredientials: async function (query) {
         console.log(`[User] searching ${query} credientials`);
@@ -55,9 +75,7 @@ module.exports = {
     getUserWithKey: async function (key) {
         const usersCollection = await mongo.connectWithUsersCollection();
 
-        const userID = usersCollection.findOne({ key: key }, { _id: 1 });
-
-        const user = await module.exports.get(userID);
+        const user = await usersCollection.findOne({ key: key });
 
         if (user) return user;
         return false;
@@ -74,28 +92,34 @@ module.exports = {
                 projection[field] = 1;
         });
 
-        let user = await usersCollection.findOne(
-            { _id: parseInt(id) },
-            { projection: projection }
-        );
+        try {
+            let user = await usersCollection.findOne(
+                { _id: parseInt(id) },
+                { projection: projection }
+            );
 
-        if (user) {
-            if (projection?.avatar) {
-                if (fs.existsSync(`./uploads/avatars/${id}.png`)) {
-                    user.avatar = `./uploads/avatars/${id}.png`;
-                } else {
-                    user.avatar = `./uploads/avatars/regular.png`;
+            if (user) {
+                if (projection?.avatar) {
+                    if (fs.existsSync(`./uploads/avatars/${id}.png`)) {
+                        user.avatar = `./uploads/avatars/${id}.png`;
+                    } else {
+                        user.avatar = `./uploads/avatars/regular.png`;
+                    }
                 }
+                return results.successWithData(user);
             }
-            return results.successWithData(user);
+            return results.error("User not found", 400);  
+        }
+        catch {  
+            return results.unexpectedError();
         }
 
-        return results.error("User not found", 400);
+
     },
     getMultipleUsers: async function () {
-      const usersCollection = await mongo.connectWithUsersCollection();
+        const usersCollection = await mongo.connectWithUsersCollection();
 
-      //todo: finish
+        //TODO: finish
     },
     update: async function (key, updatedFileds) {
         const usersCollection = await mongo.connectWithUsersCollection();
@@ -117,14 +141,30 @@ module.exports = {
 
         return results.success();
     },
+    createTempUser: async function () {
+        const usersCollection = await mongo.connectWithUsersCollection();
+        const userID = await mongo.getIDForNewEntry("users");
+
+        const user = {
+            _id: userID,
+            key: generateUserKey(16),
+            registered: false,
+        };
+
+        const result = usersCollection.insertOne(user);
+
+        if (result) {
+            return results.successWithData(user);
+        } else return results.unexpectedError();
+    },
 };
 
-function generateUserKey() {
+function generateUserKey(count) {
     let result = "";
     let characters =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let charactersLength = characters.length;
-    for (let i = 0; i < 32; i++) {
+    for (let i = 0; i < count; i++) {
         result += characters.charAt(
             Math.floor(Math.random() * charactersLength)
         );
@@ -132,4 +172,29 @@ function generateUserKey() {
     return result;
 }
 
-const restrictedProjectionFields = ["password", "key", "email", "confirmed"];
+async function compareKeyAndID(id, key) {
+    const usersCollection = await mongo.connectWithUsersCollection();
+
+    const userFromKey = await module.exports.getUserWithKey(key);
+
+    return userFromKey["_id"] == id;
+}
+
+
+const restrictedProjectionFields = [
+    "password",
+    "key",
+    "email",
+    "confirmed",
+    "registered",
+];
+
+function createNewUser (user) {
+
+}
+
+function updateUser (oldUserID, newUser) {
+
+}
+
+

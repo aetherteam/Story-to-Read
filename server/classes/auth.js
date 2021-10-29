@@ -9,7 +9,8 @@ module.exports = {
         password,
         passwordConfirmation,
         username,
-        nickname
+        nickname,
+        tempUser
     ) {
         console.log("[Registraion] process started");
 
@@ -26,11 +27,16 @@ module.exports = {
             return results.error("User already exists", 400)
         }
 
+        if (!tempUser) {
+            tempUser = await User.createTempUser();
+        }
+
         const createdUser = await User.create(
             username,
             nickname,
             email,
-            encrypt(password)
+            encrypt(password),
+            tempUser
         );
 
         console.log(createdUser)
