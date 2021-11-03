@@ -1,0 +1,23 @@
+{
+  "name": "was",
+  "version": "1.0.0",
+  "description": "«Write and Share» is a service where users can read books, as well as publish their own. The project is still small and only at the beginning of its path, but in the future many interesting innovations are planned that will contribute to improving and improving the usability of the server.",
+  "main": "index.js",
+  "scripts": {
+    "herstart-server": "cd server && npm run herstart",
+    "herstart-client": "cd client/was && npm run herstart"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aetherteam/was.git"
+  },
+  "keywords": [
+    "WaS"
+  ],
+  "author": "AetherTeam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aetherteam/was/issues"
+  },
+  "homepage": "https://github.com/aetherteam/was#readme"
+}

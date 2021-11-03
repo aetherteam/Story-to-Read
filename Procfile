@@ -1,1 +1,1 @@
-web: cd server && npm run herstart
+web: npm run herstart-server
