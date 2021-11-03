@@ -16,7 +16,9 @@ fastify.register(require("./routes/auth.js"));
 fastify.register(require("./routes/book.js"));
 fastify.register(require("./routes/uploads.js"));
 fastify.register(require("./routes/user.js"));
-
+fastify.get("/check/", async (request, reply) => {
+        reply.code(200).send("Everything is working!");
+});
 // Run the server!
 module.exports.start = async (port) => {
     try {

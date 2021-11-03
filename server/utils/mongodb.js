@@ -25,7 +25,7 @@ module.exports = {
 }
 
 async function connect() {
-    const client = new MongoClient("mongodb://127.0.0.1/?writeConcern=majority");
+    const client = new MongoClient("mongodb+srv://doadmin:3Y8176da9R0k5ipI@was-780725d5.mongo.ondigitalocean.com/admin?authSource=admin&replicaSet=was&tls=true&tlsCAFile=/Users/eugenekannou/Downloads/ca-certificate.crt");
     await client.connect();
     return client.db("was");
 }

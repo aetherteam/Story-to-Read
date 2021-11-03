@@ -27,6 +27,7 @@ module.exports = {
             return results.error("User already exists", 400)
         }
 
+        // TODO: if tempuser does not exists - create him
         if (!tempUser) {
             tempUser = await User.createTempUser();
         }

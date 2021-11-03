@@ -1,5 +1,4 @@
 const Book = require("../classes/book.js");
-const keyToId = require("../decorators/keyToId.js");
 
 let create = async (request, userID) => {
     const rp = request.body;
@@ -14,7 +13,7 @@ let create = async (request, userID) => {
 
 async function routes(fastify, options) {
     fastify.post("/book/create/", async (request, reply) => {
-        const result = await keyToId(create, request);
+        const result = await keyToID(create, request);
 
         if (result.success) {
             reply.code(200).send({ result });
@@ -33,6 +32,20 @@ async function routes(fastify, options) {
             reply.code(result.code).send({ result });
         }
     });
+}
+
+const { getUserWithKey } = require("../classes/user")
+
+let keyToID = async (fn, request) => {
+    const id = await getUserWithKey(request.body.key);
+
+    if (!id) {
+        return false;
+    }
+
+    const result = await fn(request, userId=id["_id"])
+
+    return result;
 }
 
 module.exports = routes;
