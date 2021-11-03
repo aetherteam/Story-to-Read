@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Write and Share</title>
+  </head>
+
+  <body class="body" id="app">
+    <div class="body__items">
+      <div class="body__item-sidebar">
+        <div class="sidebar__fixed">
+          <div class="sidebar__header-block block block_toggle-background">
+            <img
+              class="header-block__img logo_small"
+              src="./src/img/logo.png"
+              alt="Write and Share"
+            />
+            <span class="header-block__title logo-text logo-text_middle"
+              >Write and Share</span
+            >
+          </div>
+          <nav class="sidebar__nav-block block-unpadding">
+            <ul class="nav-block__list">
+              <li class="list__item">
+                <i class="icon">X</i
+                ><a href="#" class="text text_small text_bold text_hover"
+                  >Главная</a
+                >
+              </li>
+              <li class="list__item">
+                <i class="icon">X</i
+                ><a href="#" class="text text_small text_bold text_hover"
+                  >Рекомендации</a
+                >
+              </li>
+              <li class="list__item">
+                <i class="icon">X</i
+                ><a href="#" class="text text_small text_bold text_hover"
+                  >Лента обновлений</a
+                >
+              </li>
+              <li class="list__item">
+                <i class="icon">X</i
+                ><a href="#" class="text text_small text_bold text_hover"
+                  >Библиотека</a
+                >
+              </li>
+              <li class="list__item">
+                <i class="icon">X</i
+                ><a href="#" class="text text_small text_bold text_hover"
+                  >Разработчикам</a
+                >
+              </li>
+              <li class="list__item">
+                <i class="icon">X</i
+                ><a href="#" class="text text_small text_bold text_hover"
+                  >Поддержать проект</a
+                >
+              </li>
+            </ul>
+          </nav>
+          <!-- <div
+            class="
+              sidebar__activity-block
+              block block_toggle-background block_column
+            "
+          >
+            <h2 class="text-title text_small text_bold">
+              Последняя активность
+            </h2>
+            <ul class="activity-list">
+              <li class="list-item">
+                <img
+                  src="./src/img/book.jpg"
+                  alt="Book"
+                  class="activity-img activity-img_small"
+                />
+              </li>
+              <li class="list-item">
+                <img
+                  src="./src/img/book.jpg"
+                  alt="Book"
+                  class="activity-img activity-img_small"
+                />
+              </li>
+            </ul>
+          </div> -->
+        </div>
+      </div>
+      <div class="body__item-content">
+        <div class="item-content__content block block_toggle-background">
+          <span class="content__header text-title">Последние обновления</span>
+          <ul class="book-list">
+            <li class="list-item">
+              <div class="book-item__img-block">
+                <img src="./src/img/book.jpg" class="book-item__img" alt="" />
+                <div class="book-item__icons book-item__icons_left">
+                  <span class="text text-small"><i>X</i>5</span>
+                </div>
+                <div class="book-item__icons book-item__icons_right">
+                  <span class="text text-small"><i>X</i></span>
+                </div>
+                <div class="book-item__icons book-item__icons_bottom">
+                  <span class="text text-small">Завершён</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="body__item-sidebar">
+        <div class="sidebar__fixed">
+          <div
+            class="
+              sidebar__profile-block
+              block-unpadding block_toggle-background
+            "
+          >
+            <img
+              class="profile-block__img"
+              src="./src/img/profile.jpg"
+              alt="Profile"
+            />
+
+            <div class="profile-block__info">
+              <span
+                class="text-title text_big text_bold"
+                style="margin: 0 0 10px 0"
+                >Baka Baka</span
+              >
+              <span class="text_small">Читатели: <b>12</b></span>
+              <span class="text_small">Читаемые: <b>12</b></span>
+            </div>
+          </div>
+          <nav class="sidebar__nav-block block-unpadding">
+            <ul class="nav-block__list">
+              <li class="list__item">
+                <i class="icon">X</i
+                ><a href="#" class="text text_small text_bold text_hover"
+                  >Профиль</a
+                >
+              </li>
+              <li class="list__item">
+                <i class="icon">X</i
+                ><a href="#" class="text text_small text_bold text_hover"
+                  >Мои книги</a
+                >
+              </li>
+              <li class="list__item">
+                <i class="icon">X</i
+                ><a href="#" class="text text_small text_bold text_hover"
+                  >Статистика</a
+                >
+              </li>
+              <li class="list__item">
+                <i class="icon">X</i
+                ><a href="#" class="text text_small text_bold text_hover"
+                  >Настройки</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

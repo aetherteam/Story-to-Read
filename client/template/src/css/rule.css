@@ -1,0 +1,20 @@
+:root {
+    --color__main-background: #17131A;
+    /* --color__toggle-background: #291A34; */
+    --color__toggle-background: #201A24;
+    /* --color__component-background: #261E30; */
+    --color__component-background: #27212E;
+    --color__status_static: #FFFFFF;
+    --color__status_active: #FF51F4;
+    --color__status_disable: #C4C4C4;
+    --color__status_blocked: #424242;
+    --color__status_disused: #FF3737;
+    --color__status_finished: #518CFF;
+    --color__status_unfinished: #FF8024;
+
+    --size__desctop-width: 1920px;
+    --size__page-width: 1360px;
+    --size__sidebar-width: 280px;
+    --size__border-height: 1px;
+    --size__border-radius: 20px;
+}
