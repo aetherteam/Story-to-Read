@@ -5,18 +5,24 @@ const results = require("../utils/results");
 // TODO: create easy get function that returns everything but the statistics objects;
 // TODO: create simple OOP structure for User class: public and private methods
 //       public methods should use private ones etc.
-// TODO: user.get public and private functions 
+// TODO: user.get public and private functions
 // TODO: add try/catch to all methods
 
 module.exports = {
     create: async function (username, nickname, email, password, tempUser) {
         const usersCollection = await mongo.connectWithUsersCollection();
         const userID = tempUser.data._id;
-        const userKey = tempUser.data.key
+        const userKey = tempUser.data.key;
 
-        if (!await compareKeyAndID(userID, userKey)) {return results.error("You are not allowed to create user with that id", 403)}
-        else {console.log("key and id is equal")}
-        
+        if (!(await compareKeyAndID(userID, userKey))) {
+            return results.error(
+                "You are not allowed to create user with that id",
+                403
+            );
+        } else {
+            console.log("key and id is equal");
+        }
+
         let user = {
             username,
             nickname,
@@ -25,14 +31,14 @@ module.exports = {
             confirmed: false,
             key: generateUserKey(32),
             registered: true,
+            timestamp: Date.now(),
         };
 
         try {
-            await usersCollection.updateOne({_id: userID}, {$set: user})
+            await usersCollection.updateOne({ _id: userID }, { $set: user });
             const userForReturn = await module.exports.get(userID);
             return results.successWithData(userForReturn.data);
-        }
-        catch {
+        } catch {
             return results.error("Unexpected error", 500);
         }
     },
@@ -42,19 +48,16 @@ module.exports = {
         try {
             const user = await usersCollection.findOne(query);
             if (user) {
-                console.log(            
+                console.log(
                     `[User] with ${query?.email} ${query?.nickname} parameters exists`
                 );
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
-        }
-        catch {
+        } catch {
             return results.unexpectedError();
         }
-        
     },
     findLoginCredientials: async function (query) {
         console.log(`[User] searching ${query} credientials`);
@@ -108,15 +111,12 @@ module.exports = {
                 }
                 return results.successWithData(user);
             }
-            return results.error("User not found", 400);  
-        }
-        catch {  
+            return results.error("User not found", 400);
+        } catch {
             return results.unexpectedError();
         }
-
-
     },
-    getMultipleUsers: async function () {
+    getMultiple: async function () {
         const usersCollection = await mongo.connectWithUsersCollection();
 
         //TODO: finish
@@ -180,7 +180,6 @@ async function compareKeyAndID(id, key) {
     return userFromKey["_id"] == id;
 }
 
-
 const restrictedProjectionFields = [
     "password",
     "key",
@@ -188,13 +187,3 @@ const restrictedProjectionFields = [
     "confirmed",
     "registered",
 ];
-
-function createNewUser (user) {
-
-}
-
-function updateUser (oldUserID, newUser) {
-
-}
-
-

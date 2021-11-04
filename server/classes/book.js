@@ -24,7 +24,8 @@ module.exports = {
             chapters,
             genres,
             description,
-            author
+            author,
+            timestamp: Date.now()
         };
 
         console.log("[Book] creating", book)
@@ -63,7 +64,8 @@ module.exports = {
             parentID,
             name,
             content,
-            author: userID
+            author: userID,
+            timestamp: Date.now()
         }
 
         if (await chaptersCollection.insertOne(chapter)) {
@@ -122,3 +124,4 @@ module.exports = {
         return results.successWithData(book);
     }
 }
+
