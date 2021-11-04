@@ -1,7 +1,7 @@
 const validation = require("../utils/validation");
 const User = require("../classes/user.js");
 const { encrypt, compare } = require("../utils/encryption.js");
-const results = require("../utils/results.js")
+const results = require("../utils/results.js");
 
 module.exports = {
     registration: async function (
@@ -24,7 +24,7 @@ module.exports = {
         }
 
         if (await User.isExists({ email, nickname })) {
-            return results.error("User already exists", 400)
+            return results.error("User already exists", 400);
         }
 
         // TODO: if tempuser does not exists - create him
@@ -40,7 +40,7 @@ module.exports = {
             tempUser
         );
 
-        console.log(createdUser)
+        console.log(createdUser);
         if (createdUser.success) {
             console.log("[Registraion] process finished with success");
             return results.successWithData(createdUser.data);
@@ -62,10 +62,12 @@ module.exports = {
         );
 
         if (compare(password, userCredientials.password)) {
-            return { id: userCredientials.id, key: userCredientials.key };
+            return results.successWithData({
+                id: userCredientials.id,
+                key: userCredientials.key,
+            });
         }
-
-        return false;
+        return results.error("Invalid login/password combination", 403);
     },
     restore: async function (login) {
         // TODO: password restoration function

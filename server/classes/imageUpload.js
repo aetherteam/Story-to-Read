@@ -5,52 +5,57 @@ const User = require("../classes/user");
 const Book = require("../classes/book");
 const { fromBuffer } = require("file-type");
 
-async function upload(request, reply) {
-    try {
-        const uploadValue = await request.body.upload.toBuffer();
-    }
-    catch (err) {
-        reply.code(400).send({success: false, message: "File must be smaller than 3 Megabytes" });
-    }
+async function upload(request, reply, body, user, upload) {
+
     const uploadFileName = await request.body.upload.filename;
-    const body = parseBodyToObject(request.body);
-    const user = await User.getUserWithKey(body.key);
 
-    const tempFilePath = "./temp/" + user["_id"] + uploadFileName;
+    const tempFilePath = "./" + user["_id"] + uploadFileName;
 
-    fs.writeFileSync(tempFilePath, uploadValue);
+    fs.writeFileSync(tempFilePath, upload);
+    
     if (body.type === "avatar") {
-        const newFilePath = "./uploads/avatars/" + user["_id"] + ".png";
-
+        const newFilePath = "./public/userimages/avatars/" + user["_id"] + ".png";
         jimp.read(tempFilePath, function (err, image) {
             if (err) {
                 return results.unexpectedError();
             } else {
-                fs.unlinkSync(newFilePath);
+                deleteFile(newFilePath);
                 image.write(newFilePath);
-                fs.unlinkSync(tempFilePath);  
-                return results.success();
+                deleteFile(tempFilePath);
             }
         });
+        return results.success();
     } else if (body.type === "cover") {
-        const newFilePath = "./uploads/covers/" + body.bookID + ".png";
+        const newFilePath = "./public/userimages/covers/" + body.bookID + ".png";
 
         jimp.read(tempFilePath, function (err, image) {
             if (err) {
                 return results.unexpectedError();
             } else {
-                fs.unlinkSync(newFilePath);
+                deleteFile(newFilePath);
                 image.write(newFilePath);
-                fs.unlinkSync(tempFilePath);
+                deleteFile(tempFilePath);
                 return results.success();
             }
         });
+        return results.success();
     } else {
         return results.error("Bad data", 403);
     }
 }
 // TODO: create delete upload function
-
+function deleteFile(path) {
+    try {
+        fs.unlinkSync(path);
+    }
+    catch {}
+}
+/* Params: 
+    key
+    type (avatar/cover)
+    bookID (if Type==cover)
+    upload
+*/
 async function checkArguments(request, reply) {
     const body = parseBodyToObject(request.body);
     const uploadValue = await request.body.upload.toBuffer();
@@ -80,8 +85,7 @@ async function checkArguments(request, reply) {
         }
     }
 
-    const result = await upload(request, reply);
-
+    const result = await upload(request, reply, body, user, uploadValue);
     return result;
 }
 
