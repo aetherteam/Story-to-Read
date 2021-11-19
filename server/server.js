@@ -1,3 +1,5 @@
+const User = require('./classes/user.js');
+
 // Require the framework and instantiate it
 const fastify = require("fastify")();
 // String parser
@@ -10,6 +12,20 @@ fastify.register(require("fastify-formbody"), {
 fastify.register(require("fastify-multipart"), {
     attachFieldsToBody: true,
     limits: { fileSize: 3000000 },
+})
+
+
+fastify.addHook('preValidation', async (request, reply) => {
+    if (!request.url in SKIP_USER_KEY_CHECKING) {
+        const user = await User.getUserWithKey(request.body.key);
+        console.log(request.url)
+        if (user) {
+            request.body = { userID: user.id, ...request.body}
+        }
+        else {
+            reply.code(444).send('Cannot access this method without valid user key');
+        }
+    }
 });
 
 fastify.register(require("./routes/auth.js"));
@@ -29,3 +45,6 @@ module.exports.start = async (port) => {
         process.exit(1);
     }
 };
+
+
+const SKIP_USER_KEY_CHECKING = ["/auth/registration/", "/auth/login/", "/user/createTempUser"];

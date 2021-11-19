@@ -25,8 +25,10 @@ module.exports = {
 }
 
 async function connect() {
-    const client = new MongoClient("mongodb+srv://doadmin:3Y8176da9R0k5ipI@was-780725d5.mongo.ondigitalocean.com/admin?authSource=admin&replicaSet=was&tls=true&tlsCAFile=/Users/eugenekannou/Documents/GitHub/was/server/utils/ca-certificate.crt");
+    console.log("connecting to db...")
+    const client = new MongoClient("mongodb+srv://doadmin:3Y8176da9R0k5ipI@was-780725d5.mongo.ondigitalocean.com/admin?authSource=admin&replicaSet=was&tls=true&tlsCAFile=C:/Users/Eugene Kannou/Documents/GitHub/was/server/utils/ca-certificate.crt");
     await client.connect();
+    console.log("db connection established")
     return client.db("was");
 }
 async function connectWithUserCollection() {
