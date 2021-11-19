@@ -8,7 +8,7 @@ module.exports = {
             return results.error("Comment cannot be empty", 403);
         }
 
-        const commentsCollection = await mongo.connectWithCommentsCollection();
+        const commentsCollection = global.mongo.coollection("comments");
 
         const comment = {
             _id: await mongo.getIDForNewEntry("comments"),
@@ -34,7 +34,7 @@ module.exports = {
             );
         }
 
-        const commentsCollection = await mongo.connectWithCommentsCollection();
+        const commentsCollection = global.mongo.coollection("comments");
 
         const result = await commentsCollection.deleteOne({ _id: commentID });
 
@@ -52,7 +52,7 @@ module.exports = {
             );
         }
 
-        const commentsCollection = await mongo.connectWithCommentsCollection();
+        const commentsCollection = global.mongo.coollection("comments");
 
         const updated = { $set: { text } };
 
@@ -67,7 +67,7 @@ module.exports = {
 };
 
 async function checkCommentOwnership(userID, commentID) {
-    const commentsCollection = await mongo.connectWithCommentsCollection();
+    const commentsCollection = global.mongo.coollection("comments");
     const comment = await commentsCollection.findOne({ _id: commentID });
     return comment["_id"] === userID;
 }

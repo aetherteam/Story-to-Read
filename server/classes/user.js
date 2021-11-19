@@ -10,7 +10,7 @@ const results = require("../utils/results");
 
 module.exports = {
     create: async function (username, nickname, email, password, tempUser) {
-        const usersCollection = await mongo.connectWithUsersCollection();
+        const usersCollection = global.mongo.collection("users");
         const userID = tempUser.data._id;
         const userKey = tempUser.data.key;
 
@@ -43,7 +43,7 @@ module.exports = {
         }
     },
     isExists: async function (query) {
-        const usersCollection = await mongo.connectWithUsersCollection();
+        const usersCollection = global.mongo.collection("users");
 
         try {
             const user = await usersCollection.findOne(query);
@@ -62,7 +62,7 @@ module.exports = {
     findLoginCredientials: async function (query) {
         console.log(`[User] searching ${query} credientials`);
 
-        const usersCollection = await mongo.connectWithUsersCollection();
+        const usersCollection = global.mongo.collection("users");
 
         const user = await usersCollection.findOne({
             $or: [{ nickname: query }, { email: query }],
@@ -76,7 +76,7 @@ module.exports = {
         return { id: user._id, password: user.password, key: user.key };
     },
     getUserWithKey: async function (key) {
-        const usersCollection = await mongo.connectWithUsersCollection();
+        const usersCollection = global.mongo.collection("users");
 
         const user = await usersCollection.findOne({ key: key });
 
@@ -84,7 +84,7 @@ module.exports = {
         return false;
     },
     get: async function (id, fields) {
-        const usersCollection = await mongo.connectWithUsersCollection();
+        const usersCollection = global.mongo.collection("users");
 
         if (!fields) fields = ["username", "nickname", "avatar"]; // default value
 
@@ -117,12 +117,12 @@ module.exports = {
         }
     },
     getMultiple: async function () {
-        const usersCollection = await mongo.connectWithUsersCollection();
+        const usersCollection = global.mongo.collection("users");
 
         //TODO: finish
     },
     update: async function (key, updatedFileds) {
-        const usersCollection = await mongo.connectWithUsersCollection();
+        const usersCollection = global.mongo.collection("users");
         const userID = await module.exports.getUserWithKey(key)["_id"];
 
         if (!userID) {
@@ -142,7 +142,7 @@ module.exports = {
         return results.success();
     },
     createTempUser: async function () {
-        const usersCollection = await mongo.connectWithUsersCollection();
+        const usersCollection = global.mongo.collection("users");
         const userID = await mongo.getIDForNewEntry("users");
 
         const user = {
@@ -173,7 +173,7 @@ function generateUserKey(count) {
 }
 
 async function compareKeyAndID(id, key) {
-    const usersCollection = await mongo.connectWithUsersCollection();
+    const usersCollection = global.mongo.collection("users");
 
     const userFromKey = await module.exports.getUserWithKey(key);
 

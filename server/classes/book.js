@@ -9,7 +9,7 @@ const results = require('../utils/results.js');
 
 module.exports = {
     create: async function (name, chapters = [], genres = [], description = "", author) {
-        const booksCollection = await mongo.connectWithBooksCollection();
+        const booksCollection = global.mongo.collection("books");
 
         if (!validation.bookDescription(description) || !validation.basic(name)) {
             console.error("[Book] parameters are wrong")
@@ -39,15 +39,17 @@ module.exports = {
         return results.error("Unexpected error", 500);
     },
     checkOwnership: async function (bookID, userID) {
-        const booksCollection = await mongo.connectWithBooksCollection();
+        const booksCollection = global.mongo.collection('books');
         const book = await booksCollection.findOne({ "_id": parseInt(bookID) });
 
         console.log(book, userID)
-        return book["owner"] === userID;
+        return book["author"] === userID;
     },
-    addChapter: async function (parentID, name, content, userID) {
-        const booksCollection = await mongo.connectWithBooksCollection();
-        const doUserHaveRights = await module.exports.checkOwnership(parentID, userID);
+    addChapter: async function (bookID, name, content, author) {
+        const booksCollection = global.mongo.collection('books');
+        const chaptersCollection = global.mongo.collection('chapters');
+
+        const doUserHaveRights = await module.exports.checkOwnership(bookID, author);
 
         if (!validation.chapterContent(content) || !validation.basic(name)) {
             console.log("[Chapter] Fields are invalid");
@@ -55,16 +57,17 @@ module.exports = {
         }
 
         if (!doUserHaveRights) {
-            console.error("[Book] User have no rights to create chapter for", parentID);
-            return "forbidden";
+            console.error("[Book] User have no rights to create chapter for", bookID);
+            return results.error("Forbidden", 403);
         }
 
+        const chapterID = await mongo.getIDForNewEntry("chapters");
         const chapter = {
-            _id: await mongo.getIDForNewEntry("chapters"),
-            parentID,
+            _id: chapterID,
+            bookID,
             name,
             content,
-            author: userID,
+            author,
             timestamp: Date.now()
         }
 
@@ -75,20 +78,20 @@ module.exports = {
                 { "_id": parseInt(bookID) },
                 { $set: { "chapters": [...book["chapters"], chapterID] } }
             );
-            return chapter;
+            return results.successWithData(chapter);
         }
-        return false;
+        return results.unexpectedError();
 
     },
-    getChapterInfo: async function (chapterID) {
-        const chaptersCollection = await mongo.connectWithChaptersCollection();
+    getChapter: async function (chapterID) {
+        const chaptersCollection = global.mongo.collection("chapters");
         const chapter = chaptersCollection.findOne({ "_id": parseInt(chapterID) },{ projection: { content: 0, author: 0 }} );
 
         return chapter;
     },
     get: async function (bookID) {
-        const chaptersCollection = await mongo.connectWithChaptersCollection();
-        const booksCollection = await mongo.connectWithBooksCollection();
+        const chaptersCollection = global.mongo.collection("chapters");
+        const booksCollection = global.mongo.collection("chapters");
 
         let book = await booksCollection.findOne({ "_id": parseInt(bookID) });
 

@@ -1,0 +1,3 @@
+{
+    "mongoConnectionString": "mongodb+srv://doadmin:3Y8176da9R0k5ipI@was-780725d5.mongo.ondigitalocean.com/admin?authSource=admin&replicaSet=was&tls=true&tlsCAFile=/Users/eugenekannou/Documents/GitHub/was/server/utils/ca-certificate.crt"
+}

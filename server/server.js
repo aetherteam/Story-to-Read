@@ -1,9 +1,12 @@
 const User = require('./classes/user.js');
-
+const mongodb = require('./utils/mongodb');
 // Require the framework and instantiate it
 const fastify = require("fastify")();
 // String parser
 const qs = require("qs");
+
+//initialize global DB connection
+mongodb.createGlobalConnection();
 
 // Content Parser
 fastify.register(require("fastify-formbody"), {
@@ -14,13 +17,11 @@ fastify.register(require("fastify-multipart"), {
     limits: { fileSize: 3000000 },
 })
 
-
 fastify.addHook('preValidation', async (request, reply) => {
-    if (!request.url in SKIP_USER_KEY_CHECKING) {
+    if (!SKIP_USER_KEY_CHECKING.includes(request.url)) {
         const user = await User.getUserWithKey(request.body.key);
-        console.log(request.url)
         if (user) {
-            request.body = { userID: user.id, ...request.body}
+            request.body = { userID: user._id, ...request.body}
         }
         else {
             reply.code(444).send('Cannot access this method without valid user key');
