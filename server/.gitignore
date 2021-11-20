@@ -6,5 +6,5 @@
 
 # Dev Files
 *.xmind
-utils/config.json
-utils/ca-certificate.crt
+**/utils/config.json
+**/utils/ca-certificate.crt
