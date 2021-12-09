@@ -8,3 +8,4 @@
 *.xmind
 **/utils/config.json
 **/utils/ca-certificate.crt
+*/.DS_Store
