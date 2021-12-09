@@ -1,5 +1,5 @@
-const User = require('./classes/user.js');
-const mongodb = require('./utils/mongodb');
+const User = require("./classes/user.js");
+const mongodb = require("./utils/mongodb");
 // Require the framework and instantiate it
 const fastify = require("fastify")();
 // String parser
@@ -12,19 +12,25 @@ mongodb.createGlobalConnection();
 fastify.register(require("fastify-formbody"), {
     parser: (str) => qs.parse(str),
 });
+
 fastify.register(require("fastify-multipart"), {
     attachFieldsToBody: true,
     limits: { fileSize: 3000000 },
-})
+});
 
-fastify.addHook('preValidation', async (request, reply) => {
-    if (!SKIP_USER_KEY_CHECKING.includes(request.url)) {
+fastify.register(require("fastify-cors"), {
+    origin: "*",
+});
+
+fastify.addHook("preValidation", async (request, reply) => {
+    if (request?.body?.key) { // TODO: вернуть проверку по SKIP_USER_KEY_CHECKING
         const user = await User.getUserWithKey(request.body.key);
         if (user) {
-            request.body = { userID: user._id, ...request.body}
-        }
-        else {
-            reply.code(444).send('Cannot access this method without valid user key');
+            request.body = { userID: user._id, ...request.body };
+        } else {
+            reply
+                .code(444)
+                .send("Cannot access this method without valid user key");
         }
     }
 });
@@ -34,7 +40,7 @@ fastify.register(require("./routes/book.js"));
 fastify.register(require("./routes/uploads.js"));
 fastify.register(require("./routes/user.js"));
 fastify.get("/check/", async (request, reply) => {
-        reply.code(200).send("Everything is working!");
+    reply.code(200).send("Everything is working!");
 });
 // Run the server!
 module.exports.start = async (port) => {
@@ -47,5 +53,8 @@ module.exports.start = async (port) => {
     }
 };
 
-
-const SKIP_USER_KEY_CHECKING = ["/auth/registration/", "/auth/login/", "/user/createTempUser"];
+const SKIP_USER_KEY_CHECKING = [
+    "/auth/registration/",
+    "/auth/login/",
+    "/user/createTempUser",
+];

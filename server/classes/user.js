@@ -11,8 +11,8 @@ const results = require("../utils/results");
 module.exports = {
     create: async function (username, nickname, email, password, tempUser) {
         const usersCollection = global.mongo.collection("users");
-        const userID = tempUser.data._id;
-        const userKey = tempUser.data.key;
+        const userID = tempUser.id;
+        const userKey = tempUser.key;
 
         if (!(await compareKeyAndID(userID, userKey))) {
             return results.error(
@@ -51,9 +51,9 @@ module.exports = {
                 console.log(
                     `[User] with ${query?.email} ${query?.nickname} parameters exists`
                 );
-                return true;
+                return { result: true, user: user };
             } else {
-                return false;
+                return { result: false };
             }
         } catch {
             return results.unexpectedError();
@@ -88,7 +88,7 @@ module.exports = {
 
         if (!fields) fields = ["username", "nickname", "avatar"]; // default value
 
-        let projection = { _id: id };
+        let projection = { _id: 1 };
 
         fields.forEach((field) => {
             if (!restrictedProjectionFields.includes(field))
@@ -97,10 +97,10 @@ module.exports = {
 
         try {
             let user = await usersCollection.findOne(
-                { _id: parseInt(id) },
+                { _id: id },
                 { projection: projection }
             );
-
+            
             if (user) {
                 if (projection?.avatar) {
                     if (fs.existsSync(`./uploads/avatars/${id}.png`)) {
@@ -147,8 +147,9 @@ module.exports = {
 
         const user = {
             _id: userID,
-            key: generateUserKey(16),
+            key: generateUserKey(32),
             registered: false,
+            timestamp: Date.now(),
         };
 
         const result = usersCollection.insertOne(user);

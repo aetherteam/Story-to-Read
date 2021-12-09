@@ -47,6 +47,6 @@ module.exports = {
 
         const user = await usersCollection.findOne({ _id: userID });
 
-        return (user.registered == true && user.confirmed == true);
+        return user.registered == true && user.confirmed == true;
     },
 };

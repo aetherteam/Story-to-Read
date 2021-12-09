@@ -23,8 +23,9 @@ module.exports = {
             return results.error("Invalid user data", 400);
         }
 
-        if (await User.isExists({ email, nickname })) {
-            return results.error("User already exists", 400);
+        const doUserExists = await User.isExists({ email, nickname });
+        if (doUserExists.result) {
+            if (doUserExists.registered == true) return results.error("User already exists", 400);
         }
 
         // TODO: if tempuser does not exists - create him
@@ -54,7 +55,7 @@ module.exports = {
 
         if (!userCredientials) {
             console.log("[Login] user credentials is not found");
-            return false;
+            return results.error("Invalid login/password combination", 403);
         }
 
         console.log(
@@ -72,4 +73,5 @@ module.exports = {
     restore: async function (login) {
         // TODO: password restoration function
     },
+    confirm: async function (userID, code) {},
 };
