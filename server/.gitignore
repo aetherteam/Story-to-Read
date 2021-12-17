@@ -1,0 +1,15 @@
+# Logs
+*/logs
+
+# Dev dirs
+
+*/node_modules
+*/public
+
+# Dev files
+
+*/utils/config.json
+*/utils/ca-sertificate.crt
+
+
+

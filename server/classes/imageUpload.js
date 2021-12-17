@@ -19,7 +19,7 @@ async function upload(request, reply, body, user, upload) {
             if (err) {
                 return results.unexpectedError();
             } else {
-                // deleteFile(newFilePath);
+                deleteFile(newFilePath);
                 image.write(newFilePath);
                 deleteFile(tempFilePath);
             }

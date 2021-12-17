@@ -10,14 +10,10 @@ fastify.register(require("fastify-formbody"), {
 
 // fastify.register(require('fastify-multipart'))
 
-<<<<<<< Updated upstream
-// Declare a route
-fastify.register(require("./routes/user"));
-
-=======
 fastify.register(require("fastify-cors"), {
     origin: "*",
 });
+
 //TODO: сделать хук красивее
 fastify.addHook("preValidation", async (request, reply) => {
     console.log(request)
@@ -37,7 +33,7 @@ fastify.addHook("preValidation", async (request, reply) => {
                     .send("Cannot access this method without valid user key");
             }
         }
-        if (request.method === "POST") {
+        else if (request.method === "POST") {
             const usersCollection = global.mongo.collection("users");
             
             const user = await usersCollection.findOne({
@@ -77,7 +73,6 @@ fastify.register(require("./routes/user.js"));
 fastify.get("/check/", async (request, reply) => {
     reply.code(200).send("Everything is working!");
 });
->>>>>>> Stashed changes
 // Run the server!
 module.exports.start = async (port) => {
   try {
@@ -87,8 +82,7 @@ module.exports.start = async (port) => {
     process.exit(1);
   }
 };
-<<<<<<< Updated upstream
-=======
+
 
 const SKIP_USER_KEY_CHECKING = [
     "/auth/registration",
@@ -97,5 +91,4 @@ const SKIP_USER_KEY_CHECKING = [
     "/book/getOne",
     "/book/get",
     "/user/get",
-];
->>>>>>> Stashed changes
+]; 
