@@ -6,4 +6,5 @@
 */node_modules
 
 # Dev Files
-*.xmind
+.DS_Store
+.DS_Store?

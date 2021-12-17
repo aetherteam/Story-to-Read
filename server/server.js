@@ -1,46 +1,83 @@
 const User = require("./classes/user.js");
 const mongodb = require("./utils/mongodb");
 // Require the framework and instantiate it
-const fastify = require("fastify")();
-// String parser
 const qs = require("qs");
+const fastify = require('fastify')({
+    querystringParser: str => qs.parse(str)
+  })
+// String parser
 
 //initialize global DB connection
 mongodb.createGlobalConnection();
 
 // Content Parser
-fastify.register(require("fastify-formbody"), {
-    parser: (str) => qs.parse(str),
-});
+// fastify.register(require("fastify-formbody"), {
+//     parser: (str) => qs.parse(str),
+// });
 
 fastify.register(require("fastify-multipart"), {
     attachFieldsToBody: true,
     limits: { fileSize: 3000000 },
 });
 
-// fastify.register(require('fastify-multipart'))
-
 fastify.register(require("fastify-cors"), {
     origin: "*",
 });
-
 fastify.addHook("preValidation", async (request, reply) => {
-    if (request?.body?.key) { // TODO: вернуть проверку по SKIP_USER_KEY_CHECKING
-        const user = await User.getUserWithKey(request.body.key);
-        if (user) {
-            request.body = { userID: user._id, ...request.body };
-        } else {
-            reply
-                .code(444)
-                .send("Cannot access this method without valid user key");
+    console.log(request)
+    if (!SKIP_USER_KEY_CHECKING.includes(request.routerPath)) {
+        if (request.headers["content-type"].match(/(multipart\/form-data;*)/g)) {
+            const usersCollection = global.mongo.collection("users");
+            
+            const user = await usersCollection.findOne({
+                key: request.body.key.value,
+            });
+
+            if (user) {
+                return { userID: parseInt(user._id), ...request.body };
+            } else {
+                reply
+                    .code(444)
+                    .send("Cannot access this method without valid user key");
+            }
+        }
+        if (request.method === "POST") {
+            const usersCollection = global.mongo.collection("users");
+            
+            const user = await usersCollection.findOne({
+                key: request.body.key,
+            });
+
+            if (user) {
+                return { userID: parseInt(user._id), ...request.body };
+            } else {
+                reply
+                    .code(444)
+                    .send("Cannot access this method without valid user key");
+            }
+        } else if (request.method === "GET") {
+            const usersCollection = global.mongo.collection("users");
+
+            const user = await usersCollection.findOne({
+                key: request.query.key,
+            });
+
+            if (user) {
+                request.query = { userID: parseInt(user._id), ...request.query };
+            } else {
+                reply
+                    .code(444)
+                    .send("Cannot access this method without valid user key");
+            }
         }
     }
 });
 
+fastify.register(require("./routes/user.js"));
 fastify.register(require("./routes/auth.js"));
 fastify.register(require("./routes/book.js"));
 fastify.register(require("./routes/uploads.js"));
-fastify.register(require("./routes/user.js"));
+
 fastify.get("/check/", async (request, reply) => {
     reply.code(200).send("Everything is working!");
 });
@@ -56,7 +93,10 @@ module.exports.start = async (port) => {
 };
 
 const SKIP_USER_KEY_CHECKING = [
-    "/auth/registration/",
-    "/auth/login/",
+    "/auth/registration",
+    "/auth/login",
     "/user/createTempUser",
+    "/book/getOne",
+    "/book/get",
+    "/user/get",
 ];
