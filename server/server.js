@@ -4,6 +4,7 @@ const mongodb = require("./utils/mongodb");
 const fastify = require("fastify")();
 // String parser
 const qs = require("qs");
+const mongodb = require("./utils/mongodb.js");
 
 //initialize global DB connection
 mongodb.createGlobalConnection();
@@ -17,6 +18,9 @@ fastify.register(require("fastify-multipart"), {
     attachFieldsToBody: true,
     limits: { fileSize: 3000000 },
 });
+
+global.mongo = mongodb.createGlobalConnection();
+// fastify.register(require('fastify-multipart'))
 
 fastify.register(require("fastify-cors"), {
     origin: "*",
