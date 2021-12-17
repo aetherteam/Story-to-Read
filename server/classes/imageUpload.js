@@ -9,12 +9,12 @@ async function upload(request, reply, body, user, upload) {
 
     const uploadFileName = await request.body.upload.filename;
 
-    const tempFilePath = "./" + user["_id"] + uploadFileName;
+    const tempFilePath = "../" + user["_id"] + uploadFileName;
 
     fs.writeFileSync(tempFilePath, upload);
     
     if (body.type === "avatar") {
-        const newFilePath = "./public/avatars/" + user["_id"] + ".png";
+        const newFilePath = "../public/avatars/" + user["_id"] + ".png";
         jimp.read(tempFilePath, function (err, image) {
             if (err) {
                 return results.unexpectedError();
@@ -26,7 +26,7 @@ async function upload(request, reply, body, user, upload) {
         });
         return results.success();
     } else if (body.type === "cover") {
-        const newFilePath = "./public/covers/" + body.bookID + ".png";
+        const newFilePath = "../public/covers/" + body.bookID + ".png";
 
         jimp.read(tempFilePath, function (err, image) {
             if (err) {

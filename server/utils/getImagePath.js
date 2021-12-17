@@ -2,7 +2,7 @@ const fs = require("fs");
 
 module.exports = function (type, id) {
     let path = "/public/";
-    let searchPath = "./public/";
+    let searchPath = "../public/";
     switch (type) {
         case "avatar":
             path += "avatars/" + id + ".png";
