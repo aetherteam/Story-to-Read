@@ -1,5 +1,3 @@
-const mongo = require('../utils/mongodb.js');
-
 module.exports = {
     getByID: async function(id) {
         const genresCollection = global.mongo.collection('genres');

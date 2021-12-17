@@ -1,7 +1,7 @@
 const Book = require("../classes/book.js");
 
 async function routes(fastify, options) {
-    fastify.post("/book/create/", async (request, reply) => {
+    fastify.post("/book/create", async (request, reply) => {
         console.time("Book create executed in");
         const rp = request.body;
         const result = await Book.create(
@@ -19,8 +19,8 @@ async function routes(fastify, options) {
         }
         console.timeEnd("Book create executed in");
     });
-    fastify.get("/book/getOne/:bookID/", async (request, reply) => {
-        const rp = request.params;
+    fastify.get("/book/getOne", async (request, reply) => {
+        const rp = request.query;
 
         const result = await Book.getOne(rp.bookID);
 
@@ -30,7 +30,7 @@ async function routes(fastify, options) {
             reply.code(result.code).send({ result });
         }
     });
-    fastify.post("/book/addChapter/", async (request, reply) => {
+    fastify.post("/book/addChapter", async (request, reply) => {
         console.time("Book addChapter executed in");
         const rp = request.body;
         const result = await Book.addChapter(
@@ -48,17 +48,31 @@ async function routes(fastify, options) {
         console.timeEnd("Book addChapter executed in");
     });
     fastify.get("/book/get", async (request, reply) => {
-    console.time("Book get executed in");
-      const result =  await Book.get(request.query.arrange, request.query.shift, request.query.count);
-      
-      if (result.success) {
-          reply.code(200).send({ result });
-      } else {
-          reply.code(result.code).send({ result });
-      }
-      console.timeEnd("Book get executed in");
-    });
+        console.time("Book get executed in");
+        const result = await Book.get(
+            request.query.arrange,
+            request.query.shift,
+            request.query.count
+        );
 
+        if (result.success) {
+            reply.code(200).send({ result });
+        } else {
+            reply.code(result.code).send({ result });
+        }
+        console.timeEnd("Book get executed in");
+    });
+    fastify.post("/book/like", async (request, reply) => {
+        const rp = request.body;
+
+        const result = await Book.like(rp.userID, rp.bookID);
+        
+        if (result.success) {
+            reply.code(200).send({ result });
+        } else {
+            reply.code(result.code).send({ result });
+        }
+    });
 }
 
 module.exports = routes;

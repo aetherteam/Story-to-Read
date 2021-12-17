@@ -8,4 +8,4 @@
 */server/utils/config.json
 
 # Dev Files
-*.xmind
+*/public

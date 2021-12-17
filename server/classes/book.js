@@ -1,11 +1,10 @@
 const fs = require("fs");
-const mongo = require("../utils/mongodb.js");
 const validation = require("../utils/validation");
 const Genres = require("./genres.js");
 const User = require("./user.js");
 const results = require("../utils/results.js");
-
-// TODO: const globalConfig = require('../utils/globalConfig.json');
+const { getIDForNewEntry } = require("../utils/mongodb.js");
+const getImagePath = require("../utils/getImagePath.js");
 
 module.exports = {
     create: async function (
@@ -17,15 +16,17 @@ module.exports = {
     ) {
         const booksCollection = global.mongo.collection("books");
 
-        if (
-            !validation.bookDescription(description) ||
-            !validation.basic(name)
-        ) {
-            console.error("[Book] parameters are wrong");
-            return results.error("Some parameters are invalid", 400);
+        if (!validation.bookDescription(description)) {
+            console.error("[Book] Description is too long");
+            return results.error("Description is too long", 400);
         }
-
-        const _id = await mongo.getIDForNewEntry("books");
+        if (!validation.basic(name)) {
+            return results.error(
+                "Name cannot be blank or be more than 128 symbols",
+                400
+            );
+        }
+        const _id = await getIDForNewEntry("books");
 
         const book = {
             _id,
@@ -36,6 +37,7 @@ module.exports = {
             author,
             timestamp: Date.now(),
             lastUpdate: Date.now(),
+            likes: 0,
         };
 
         console.log("[Book] creating", book);
@@ -77,7 +79,7 @@ module.exports = {
             return results.error("Forbidden", 403);
         }
 
-        const chapterID = await mongo.getIDForNewEntry("chapters");
+        const chapterID = await getIDForNewEntry("chapters");
         const chapter = {
             _id: chapterID,
             bookID,
@@ -136,17 +138,13 @@ module.exports = {
             genres.push(x);
         });
 
-        if (fs.existsSync(`./uploads/covers/${bookID}.png`)) {
-            book.cover = `./uploads/covers/${bookID}.png`;
-        } else {
-            book.cover = `./uploads/covers/regular.png`;
-        }
+        book.cover = getImagePath("cover", bookID);
 
         const author = await User.get(book.author);
 
         book.chapters = chapters;
         book.genres = genres;
-        book.author = author;
+        book.author = author.data;
 
         return results.successWithData(book);
     },
@@ -178,34 +176,29 @@ module.exports = {
         });
         let cache = {
             genres: {},
-            authors: {}
+            authors: {},
         };
         let result = [];
         for (const book of books) {
             let genres = [];
             await book.genres.forEach(async (genreID) => {
+                console.log(cache);
                 if (!cache.genres[genreID]) {
                     let x = await Genres.getByID(genreID);
                     genres.push(x);
-                    cache.genres[x._id] = x;
-                }
-                else {
+                    cache.genres[toString(x._id)] = x;
+                } else {
                     genres.push(genres[genreID]);
                 }
             });
 
-            if (fs.existsSync(`./uploads/covers/${book._id}.png`)) {
-                book.cover = `./uploads/covers/${book._id}.png`;
-            } else {
-                book.cover = `./uploads/covers/regular.png`;
-            }
+            book.cover = getImagePath("cover", book._id);
 
             let author;
             if (!cache.authors[book.author]) {
                 author = await User.get(book.author);
                 cache.authors[book.author] = author;
-            }
-            else {
+            } else {
                 author = cache.authors[book.author];
             }
 
@@ -214,7 +207,38 @@ module.exports = {
 
             result.push(book);
         }
-        
+
         return results.successWithData(result);
+    },
+    like: async function (userID, bookID) {
+        const bookLikesCollection = global.mongo.collection("bookLikes");
+        const booksCollection = global.mongo.collection("books");
+
+        const doUserLiked = await bookLikesCollection.findOne({
+            userID,
+            bookID,
+        });
+
+        let result;
+        if (!doUserLiked) {
+            result = await bookLikesCollection.insertOne({ userID, bookID });
+            if (result) {
+                await booksCollection.updateOne(
+                    { _id: bookID },
+                    { $inc: { likes: 1 } }
+                );
+                return results.successWithData({ action: "like" });
+            }
+        } else {
+            result = await bookLikesCollection.deleteOne({ userID, bookID });
+            if (result) {
+                await booksCollection.updateOne(
+                    { _id: bookID },
+                    { $inc: { likes: 1 } }
+                );
+                return results.successWithData({ action: "unlike" });
+            }
+        }
+        return results.unexpectedError();
     },
 };

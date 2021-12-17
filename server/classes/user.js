@@ -1,6 +1,8 @@
-const mongo = require("../utils/mongodb.js");
 const fs = require("fs");
 const results = require("../utils/results");
+const { getIDForNewEntry } = require("../utils/mongodb.js");
+const getImagePath = require("../utils/getImagePath.js");
+const { encrypt } = require("../utils/encryption");
 
 // TODO: create easy get function that returns everything but the statistics objects;
 // TODO: create simple OOP structure for User class: public and private methods
@@ -97,17 +99,13 @@ module.exports = {
 
         try {
             let user = await usersCollection.findOne(
-                { _id: id },
+                { _id: parseInt(id) },
                 { projection: projection }
             );
-            
+
             if (user) {
                 if (projection?.avatar) {
-                    if (fs.existsSync(`./uploads/avatars/${id}.png`)) {
-                        user.avatar = `./uploads/avatars/${id}.png`;
-                    } else {
-                        user.avatar = `./uploads/avatars/regular.png`;
-                    }
+                    user.avatar = getImagePath("avatar", id);
                 }
                 return results.successWithData(user);
             }
@@ -121,17 +119,23 @@ module.exports = {
 
         //TODO: finish
     },
-    update: async function (key, updatedFileds) {
+    edit: async function (userID, updatedFileds) {
         const usersCollection = global.mongo.collection("users");
-        const userID = await module.exports.getUserWithKey(key)["_id"];
 
         if (!userID) {
             return results.error("User not found", 400);
         }
 
-        const updated = {
+        let updated = {
             $set: updatedFileds,
         };
+
+        for (let [field, value] of Object.entries(updatedFields)) {
+            if (!CONSTANT_USER_FIELDS.includes(field)) {
+                if (field === "password")  value = encrypt(password);
+                updated.$set[field] = value;
+            }
+        }
 
         const result = usersCollection.updateOne({ _id: userID }, updated);
 
@@ -143,7 +147,7 @@ module.exports = {
     },
     createTempUser: async function () {
         const usersCollection = global.mongo.collection("users");
-        const userID = await mongo.getIDForNewEntry("users");
+        const userID = await getIDForNewEntry("users");
 
         const user = {
             _id: userID,
@@ -178,13 +182,19 @@ async function compareKeyAndID(id, key) {
 
     const userFromKey = await module.exports.getUserWithKey(key);
 
-    return userFromKey["_id"] == id;
+    return userFromKey["_id"] === id;
 }
 
 const restrictedProjectionFields = [
     "password",
     "key",
-    "email",
     "confirmed",
     "registered",
 ];
+
+const CONSTANT_USER_FIELDS = [
+    "key",
+    "isRegistered",
+    "confirmed",
+    "_id",
+]
