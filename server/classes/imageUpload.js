@@ -14,7 +14,7 @@ async function upload(request, reply, body, user, upload) {
     fs.writeFileSync(tempFilePath, upload);
     
     if (body.type === "avatar") {
-        const newFilePath = "./public/avatars/" + user["_id"] + ".png";
+        const newFilePath = "./public/userimages/avatars/" + user["_id"] + ".png";
         jimp.read(tempFilePath, function (err, image) {
             if (err) {
                 return results.unexpectedError();
@@ -26,7 +26,7 @@ async function upload(request, reply, body, user, upload) {
         });
         return results.success();
     } else if (body.type === "cover") {
-        const newFilePath = "./public/covers/" + body.bookID + ".png";
+        const newFilePath = "./public/userimages/covers/" + body.bookID + ".png";
 
         jimp.read(tempFilePath, function (err, image) {
             if (err) {
@@ -61,7 +61,6 @@ async function checkArguments(request, reply) {
     const uploadValue = await request.body.upload.toBuffer();
 
     const user = await User.getUserWithKey(body.key);
-    // console.log(request.body)
 
     if (!user) {
         return results.error("You have no access to this method", 403);
@@ -87,8 +86,7 @@ async function checkArguments(request, reply) {
     }
 
     const result = await upload(request, reply, body, user, uploadValue);
-    
-    return results.success();
+    return result;
 }
 
 

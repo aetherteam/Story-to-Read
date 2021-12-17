@@ -1,6 +1,6 @@
 const User = require("./user.js");
-const validation = require("../utils/validation.js");
 const mongo = require("../utils/mongodb.js");
+const validation = require("../utils/validation.js");
 // TODO: links etc in comemnt and book description text.
 module.exports = {
     create: async function (userID, bookID, text) {
