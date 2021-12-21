@@ -1,0 +1,45 @@
+:root {
+  --color__status_white: #ffffff;
+  --color__status_static: #ffffff;
+  --color__status_disable: #8d8d8d;
+  --color__status_blocked: #3b3b3b;
+  --color__status_black: #000;
+  --color__status_disused: #ff3737;
+  --color__status_finished: var(--color__status_active);
+  --color__status_unfinished: #ff8024;
+
+  --size__desctop-width: 1920px;
+  --size__page-width: 1300px;
+  --size__sidebar-width: 280px;
+  --size__border-height: 1px;
+  --size__border-radius: 20px;
+
+  /* Light Theme */
+  
+  /* --color__main-background: #F6F6F6;
+  --color__toggle-background: #FFFFFF;
+  --color__component-background: #CCD9E3;
+  --color__status_active: #518cff;
+  --color__status_static: #515253; */
+
+  /* Purple Theme */
+
+  /* --color__main-background: #17131a;
+  --color__toggle-background: #201a24;
+  --color__component-background: #27212e;
+  --color__status_active: #ee34b0; */
+
+  /* Blue Theme */
+
+  /* --color__main-background: #13131a;
+  --color__toggle-background: #1a1c24;
+  --color__component-background: #21212e;
+  --color__status_active: #3452ee; */
+
+  /* Dark Theme */
+
+  --color__main-background: #141416;
+  --color__toggle-background: #1b1c1d;
+  --color__component-background: #181818;
+  --color__status_active: #cb206e;
+}
