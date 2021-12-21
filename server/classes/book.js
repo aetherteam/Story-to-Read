@@ -3,7 +3,6 @@ const validation = require("../utils/validation");
 const Genres = require("./genres.js");
 const User = require("./user.js");
 const results = require("../utils/results.js");
-const { getIDForNewEntry } = require("../utils/mongodb.js");
 const getImagePath = require("../utils/getImagePath.js");
 
 module.exports = {
@@ -28,8 +27,10 @@ module.exports = {
                 400
             );
         }
-        const id = await getIDForNewEntry("books");
-
+        // const id = await getIDForNewEntry("books");
+        global.cachedIndexes[books]++;
+        const id = global.cachedIndexes[books];
+        
         const book = {
             id,
             name,
@@ -81,7 +82,9 @@ module.exports = {
             return results.error("Forbidden", 403);
         }
 
-        const chapterID = await getIDForNewEntry("chapters");
+        global.cachedIndexes['chapters']++;
+        const chapterID = global.cachedIndexes['chapters'];
+
         const chapter = {
             id: chapterID,
             bookID,
@@ -183,7 +186,7 @@ module.exports = {
             genres: {},
             authors: {},
         };
-        
+
         let result = [];
         for (const book of books) {
             let genres = [];

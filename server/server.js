@@ -8,7 +8,9 @@ const fastify = require('fastify')({
 // String parser
 
 //initialize global DB connection
-mongodb.createGlobalConnection();
+mongodb.createGlobalConnection().then(() => {
+    mongodb.cacheIndexes();
+})
 
 // Content Parser
 // fastify.register(require("fastify-formbody"), {

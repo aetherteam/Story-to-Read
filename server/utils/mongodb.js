@@ -21,6 +21,23 @@ module.exports = {
         console.log("[MongoDB] connection established");
         global.mongo = client.db("was");
     },
+    cacheIndexes: async function () {
+        const db = global.mongo;
+
+        let booksLastIndex = await db.collection('books').findOne({}, { sort: ["id", "desc"] });
+        let usersLastIndex = await db.collection('users').findOne({}, { sort: ["id", "desc"] });
+        let chaptersLastIndex = await db.collection('chapters').findOne({}, { sort: ["id", "desc"] });
+        let commentsLastIndex = await db.collection('comments').findOne({}, { sort: ["id", "desc"] });
+
+        global.cachedIndexes = {
+            'users': usersLastIndex,
+            'books': booksLastIndex,
+            'chapters': chaptersLastIndex,
+            'comments': commentsLastIndex
+        }
+
+        console.log("[MongoDB] Indexes cached");
+    }
 };
 
 async function connect() {

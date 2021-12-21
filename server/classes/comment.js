@@ -10,8 +10,9 @@ module.exports = {
 
         const commentsCollection = global.mongo.coollection("comments");
 
+        global.cachedIndexes['comments']++;
         const comment = {
-            id: await mongo.getIDForNewEntry("comments"),
+            id: global.cachedIndexes['comments'],
             owner: userID,
             book: bookID,
             text: text,

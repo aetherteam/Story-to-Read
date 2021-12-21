@@ -1,6 +1,6 @@
 const fs = require("fs");
 const results = require("../utils/results");
-const { getIDForNewEntry } = require("../utils/mongodb.js");
+// const { getIDForNewEntry } = require("../utils/mongodb.js");
 const getImagePath = require("../utils/getImagePath.js");
 const { encrypt } = require("../utils/encryption");
 
@@ -154,7 +154,8 @@ module.exports = {
     },
     createTempUser: async function () {
         const usersCollection = global.mongo.collection("users");
-        const userID = await getIDForNewEntry("users");
+        global.cachedIndexes['users']
+        const userID = global.cachedIndexes['users'];
         console.log("Temp user ID", userID);
         const user = {
             id: userID,
