@@ -17,7 +17,7 @@ module.exports = {
             value != "" &&
             value != null &&
             value.length >= 2 &&
-            value.length < 32
+            value.length < 150
         ) {
             console.log("[Validation] field is basically correct");
             return true;
@@ -37,7 +37,7 @@ module.exports = {
     },
     bookDescription: function (description) {
         console.log("[Validation] description is too long");
-        return description.length < 400;
+        return description.length < 1000;
     },
     chapterContent: function (chapterContent) {
         return chapterContent.length > 10 && chapterContent.length < 10000;

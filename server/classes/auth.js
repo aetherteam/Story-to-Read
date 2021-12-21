@@ -61,7 +61,8 @@ module.exports = {
         console.log(
             "[Login] user credentials: " + JSON.stringify(userCredientials)
         );
-
+            console.log("password: " + password)
+            console.log("userCredientials.password: " + userCredientials.password)
         if (compare(password, userCredientials.password)) {
             return results.successWithData({
                 id: userCredientials.id,

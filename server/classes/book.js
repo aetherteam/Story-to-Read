@@ -18,11 +18,13 @@ module.exports = {
 
         if (!validation.bookDescription(description)) {
             console.error("[Book] Description is too long");
-            return results.error("Description is too long", 400);
+            return results.error("Description is too long (>1000)", 400);
         }
         if (!validation.basic(name)) {
+            console.error("[Book] Name cannot be blank or be more than 150 symbols");
+
             return results.error(
-                "Name cannot be blank or be more than 128 symbols",
+                "Name cannot be blank or be more than 150 symbols",
                 400
             );
         }
@@ -39,7 +41,7 @@ module.exports = {
             lastUpdate: Date.now(),
             likes: 0,
         };
-
+        
         console.log("[Book] creating", book);
         const result = booksCollection.insertOne(book);
 
@@ -174,10 +176,12 @@ module.exports = {
             }
             i++;
         });
+
         let cache = {
             genres: {},
             authors: {},
         };
+        
         let result = [];
         for (const book of books) {
             let genres = [];

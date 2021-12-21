@@ -4,6 +4,7 @@ async function routes(fastify, options) {
     fastify.post("/book/create", async (request, reply) => {
         console.time("Book create executed in");
         const rp = request.body;
+        console.log(rp)
         const result = await Book.create(
             rp.name,
             [],
