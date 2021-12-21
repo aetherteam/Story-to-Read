@@ -11,7 +11,7 @@ module.exports = {
         const commentsCollection = global.mongo.coollection("comments");
 
         const comment = {
-            _id: await mongo.getIDForNewEntry("comments"),
+            id: await mongo.getIDForNewEntry("comments"),
             owner: userID,
             book: bookID,
             text: text,
@@ -36,7 +36,7 @@ module.exports = {
 
         const commentsCollection = global.mongo.coollection("comments");
 
-        const result = await commentsCollection.deleteOne({ _id: commentID });
+        const result = await commentsCollection.deleteOne({ id: commentID });
 
         if (result) {
             return results.success();
@@ -56,7 +56,7 @@ module.exports = {
 
         const updated = { $set: { text } };
 
-        const result = commentsCollection.updateOne({ _id: commentID }, updated);
+        const result = commentsCollection.updateOne({ id: commentID }, updated);
         
         if (result) {
             return results.success();
@@ -68,6 +68,6 @@ module.exports = {
 
 async function checkCommentOwnership(userID, commentID) {
     const commentsCollection = global.mongo.coollection("comments");
-    const comment = await commentsCollection.findOne({ _id: commentID });
-    return comment["_id"] === userID;
+    const comment = await commentsCollection.findOne({ id: commentID });
+    return comment["id"] === userID;
 }

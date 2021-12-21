@@ -45,7 +45,7 @@ module.exports = {
     isRegistered: async function (userID) {
         const usersCollection = await mongo.connectWithUsersCollection();
 
-        const user = await usersCollection.findOne({ _id: userID });
+        const user = await usersCollection.findOne({ id: userID });
 
         return user.registered == true && user.confirmed == true;
     },

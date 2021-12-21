@@ -9,12 +9,12 @@ async function upload(request, reply, body, user, upload) {
 
     const uploadFileName = await request.body.upload.filename;
 
-    const tempFilePath = "../" + user["_id"] + uploadFileName;
+    const tempFilePath = "../" + user["id"] + uploadFileName;
 
     fs.writeFileSync(tempFilePath, upload);
     
     if (body.type === "avatar") {
-        const newFilePath = "../public/avatars/" + user["_id"] + ".png";
+        const newFilePath = "../public/avatars/" + user["id"] + ".png";
         jimp.read(tempFilePath, function (err, image) {
             if (err) {
                 return results.unexpectedError();
@@ -81,7 +81,7 @@ async function checkArguments(request, reply) {
             return results.error("You have not specified a book ID", 400)
         }
 
-        if (!(await Book.checkOwnership(body.bookID, user["_id"]))) {
+        if (!(await Book.checkOwnership(body.bookID, user["id"]))) {
             return results.error("You have no permossion to upload cover for this book", 403)
         }
     }

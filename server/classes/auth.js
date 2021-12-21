@@ -25,7 +25,7 @@ module.exports = {
 
         const doUserExists = await User.isExists({ email, nickname });
         if (doUserExists.result) {
-            if (doUserExists.registered == true) return results.error("User already exists", 400);
+            if (doUserExists.user.registered == true) return results.error("User already exists", 400);
         }
 
         // TODO: if tempuser does not exists - create him
@@ -38,7 +38,7 @@ module.exports = {
             nickname,
             email,
             encrypt(password),
-            tempUser
+            tempUser.data
         );
 
         console.log(createdUser);

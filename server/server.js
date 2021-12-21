@@ -24,7 +24,6 @@ fastify.register(require("fastify-cors"), {
     origin: "*",
 });
 fastify.addHook("preValidation", async (request, reply) => {
-    console.log(request)
     if (!SKIP_USER_KEY_CHECKING.includes(request.routerPath)) {
         if (request.headers["content-type"].match(/(multipart\/form-data;*)/g)) {
             const usersCollection = global.mongo.collection("users");
@@ -34,7 +33,7 @@ fastify.addHook("preValidation", async (request, reply) => {
             });
 
             if (user) {
-                return { userID: parseInt(user._id), ...request.body };
+                return { userID: parseInt(user.id), ...request.body };
             } else {
                 reply
                     .code(444)
@@ -49,7 +48,7 @@ fastify.addHook("preValidation", async (request, reply) => {
             });
 
             if (user) {
-                return { userID: parseInt(user._id), ...request.body };
+                return { userID: parseInt(user.id), ...request.body };
             } else {
                 reply
                     .code(444)
@@ -63,7 +62,7 @@ fastify.addHook("preValidation", async (request, reply) => {
             });
 
             if (user) {
-                request.query = { userID: parseInt(user._id), ...request.query };
+                request.query = { userID: parseInt(user.id), ...request.query };
             } else {
                 reply
                     .code(444)

@@ -26,10 +26,10 @@ module.exports = {
                 400
             );
         }
-        const _id = await getIDForNewEntry("books");
+        const id = await getIDForNewEntry("books");
 
         const book = {
-            _id,
+            id,
             name,
             chapters,
             genres,
@@ -52,7 +52,7 @@ module.exports = {
     },
     checkOwnership: async function (bookID, userID) {
         const booksCollection = global.mongo.collection("books");
-        const book = await booksCollection.findOne({ _id: parseInt(bookID) });
+        const book = await booksCollection.findOne({ id: parseInt(bookID) });
 
         console.log(book, userID);
         return book["author"] === userID;
@@ -81,7 +81,7 @@ module.exports = {
 
         const chapterID = await getIDForNewEntry("chapters");
         const chapter = {
-            _id: chapterID,
+            id: chapterID,
             bookID,
             name,
             content,
@@ -91,11 +91,11 @@ module.exports = {
 
         if (await chaptersCollection.insertOne(chapter)) {
             const book = await booksCollection.findOne({
-                _id: parseInt(bookID),
+                id: parseInt(bookID),
             });
 
             booksCollection.updateOne(
-                { _id: parseInt(bookID) },
+                { id: parseInt(bookID) },
                 {
                     $set: {
                         chapters: [...book["chapters"], chapterID],
@@ -110,7 +110,7 @@ module.exports = {
     getChapter: async function (chapterID) {
         const chaptersCollection = global.mongo.collection("chapters");
         const chapter = chaptersCollection.findOne(
-            { _id: parseInt(chapterID) },
+            { id: parseInt(chapterID) },
             { projection: { content: 0, author: 0 } }
         );
 
@@ -120,7 +120,7 @@ module.exports = {
         const chaptersCollection = global.mongo.collection("chapters");
         const booksCollection = global.mongo.collection("books");
 
-        let book = await booksCollection.findOne({ _id: parseInt(bookID) });
+        let book = await booksCollection.findOne({ id: parseInt(bookID) });
 
         if (!book) {
             return results.error("Book not found", 400);
@@ -186,13 +186,13 @@ module.exports = {
                 if (!cache.genres[genreID]) {
                     let x = await Genres.getByID(genreID);
                     genres.push(x);
-                    cache.genres[toString(x._id)] = x;
+                    cache.genres[toString(x.id)] = x;
                 } else {
                     genres.push(genres[genreID]);
                 }
             });
 
-            book.cover = getImagePath("cover", book._id);
+            book.cover = getImagePath("cover", book.id);
 
             let author;
             if (!cache.authors[book.author]) {
@@ -224,7 +224,7 @@ module.exports = {
             result = await bookLikesCollection.insertOne({ userID, bookID });
             if (result) {
                 await booksCollection.updateOne(
-                    { _id: bookID },
+                    { id: bookID },
                     { $inc: { likes: 1 } }
                 );
                 return results.successWithData({ action: "like" });
@@ -233,7 +233,7 @@ module.exports = {
             result = await bookLikesCollection.deleteOne({ userID, bookID });
             if (result) {
                 await booksCollection.updateOne(
-                    { _id: bookID },
+                    { id: bookID },
                     { $inc: { likes: 1 } }
                 );
                 return results.successWithData({ action: "unlike" });

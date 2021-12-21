@@ -15,6 +15,7 @@ module.exports = {
         const usersCollection = global.mongo.collection("users");
         const userID = tempUser.id;
         const userKey = tempUser.key;
+        console.log("tempUser", tempUser);
 
         if (!(await compareKeyAndID(userID, userKey))) {
             return results.error(
@@ -37,8 +38,10 @@ module.exports = {
         };
 
         try {
-            await usersCollection.updateOne({ _id: userID }, { $set: user });
+            await usersCollection.updateOne({ id: userID }, { $set: user });
             const userForReturn = await module.exports.get(userID);
+            console.log("userForReturn", userForReturn);
+
             return results.successWithData(userForReturn.data);
         } catch {
             return results.error("Unexpected error", 500);
@@ -48,7 +51,11 @@ module.exports = {
         const usersCollection = global.mongo.collection("users");
 
         try {
-            const user = await usersCollection.findOne(query);
+            const user = await usersCollection.findOne({
+                $or: [{ nickname: query.nickname }, { email: query.email }],
+            });
+    
+            console.log("user", user);
             if (user) {
                 console.log(
                     `[User] with ${query?.email} ${query?.nickname} parameters exists`
@@ -75,7 +82,7 @@ module.exports = {
         if (!user) {
             return false;
         }
-        return { id: user._id, password: user.password, key: user.key };
+        return { id: user.id, password: user.password, key: user.key };
     },
     getUserWithKey: async function (key) {
         const usersCollection = global.mongo.collection("users");
@@ -90,7 +97,7 @@ module.exports = {
 
         if (!fields) fields = ["username", "nickname", "avatar"]; // default value
 
-        let projection = { _id: 1 };
+        let projection = { id: 1 };
 
         fields.forEach((field) => {
             if (!restrictedProjectionFields.includes(field))
@@ -99,7 +106,7 @@ module.exports = {
 
         try {
             let user = await usersCollection.findOne(
-                { _id: parseInt(id) },
+                { id: parseInt(id) },
                 { projection: projection }
             );
 
@@ -132,12 +139,12 @@ module.exports = {
 
         for (let [field, value] of Object.entries(updatedFields)) {
             if (!CONSTANT_USER_FIELDS.includes(field)) {
-                if (field === "password")  value = encrypt(password);
+                if (field === "password") value = encrypt(password);
                 updated.$set[field] = value;
             }
         }
 
-        const result = usersCollection.updateOne({ _id: userID }, updated);
+        const result = usersCollection.updateOne({ id: userID }, updated);
 
         if (!result) {
             return results.error("Unexpected error", 500);
@@ -148,9 +155,9 @@ module.exports = {
     createTempUser: async function () {
         const usersCollection = global.mongo.collection("users");
         const userID = await getIDForNewEntry("users");
-
+        console.log("Temp user ID", userID);
         const user = {
-            _id: userID,
+            id: userID,
             key: generateUserKey(32),
             registered: false,
             timestamp: Date.now(),
@@ -182,7 +189,7 @@ async function compareKeyAndID(id, key) {
 
     const userFromKey = await module.exports.getUserWithKey(key);
 
-    return userFromKey["_id"] === id;
+    return userFromKey["id"] === id;
 }
 
 const restrictedProjectionFields = [
@@ -192,9 +199,4 @@ const restrictedProjectionFields = [
     "registered",
 ];
 
-const CONSTANT_USER_FIELDS = [
-    "key",
-    "isRegistered",
-    "confirmed",
-    "_id",
-]
+const CONSTANT_USER_FIELDS = ["key", "isRegistered", "confirmed", "id"];

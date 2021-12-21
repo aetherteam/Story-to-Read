@@ -8,10 +8,10 @@ module.exports = {
     getIDForNewEntry: async function (collection) {
         const db = global.mongo.collection(collection);
 
-        let result = await db.findOne({}, { sort: ["_id", "desc"] });
-
+        let result = await db.findOne({}, { sort: ["id", "desc"] });
+        console.log("new entry result", result)
         if (result) {
-            return result["_id"] + 1;
+            return result["id"] + 1;
         }
         return 10000001;
     },
