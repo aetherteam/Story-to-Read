@@ -8,10 +8,11 @@
         <span class="text_white text_big text_bold text_left mg_b_2"
           >Добро пожаловать!</span
         >
-        <span
+        <router-link
+          to="/registration"
           class="btn text_grey text_medium mg_b_1 text_center"
           style="width: 150px"
-          >Регистрация</span
+          >Регистрация</router-link
         >
         <router-link
           to="/auth"

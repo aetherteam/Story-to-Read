@@ -7,7 +7,7 @@ export default {
     userAuthAction(ctx, user) {
       axios
         .get(
-          `${Config.ServerIP}/auth/login?login=${user.userLogin}&password=${user.userPass}`
+          `${Config.ServerIP}/auth/login?login=${user.login}&password=${user.password}`
         )
         .then((res) => {
           ctx.commit("userAuthMutation", res.data.result.data);
@@ -15,51 +15,52 @@ export default {
           Cookies.set("id", res.data.result.data.id);
         });
     },
+    userRegistrationAction(user) {
+      axios.post(`${Config.ServerIP}/auth/registration`, user);
+    },
     userInfoGetAction(ctx, id) {
       axios.get(`${Config.ServerIP}/user/get?userID=${id}`).then((res) => {
         ctx.commit("userInfoGetMutatuion", res.data.user.data);
       });
     },
-    userConfirmAuthAction(ctx, {userID, authKey}) {
-      ctx.commit("userConfirmAuthMutatuion", {userID, authKey});
+    userConfirmAuthAction(ctx, { userID, authKey }) {
+      ctx.commit("userConfirmAuthMutatuion", { userID, authKey });
     },
   },
   mutations: {
     userAuthMutation(state, user) {
-      state.id = user.id;
-      state.key = user.key;
+      state.userInfo = { ...user };
       state.isAuth = true;
     },
-    userConfirmAuthMutatuion(state, {userID, authKey}) {
-      state.key = authKey;
-      state.id = userID;
+    userConfirmAuthMutatuion(state, { userID, authKey }) {
+      state.userInfo.key = authKey;
+      state.userInfo.id = userID;
       state.isAuth = true;
     },
     userInfoGetMutatuion(state, user) {
-      state.nickname = user.nickname;
-      state.username = user.username;
-      state.avatar = user.avatar;
+      state.userInfo = { ...user };
     },
   },
   state: {
-    key: null,
-    id: null,
-    avatar: null,
-    nickname: null,
-    username: null,
+    userInfo: {
+      _id: String,
+      id: Number,
+      avatar: String,
+      nickname: String,
+      username: String,
+      key: String,
+    },
     isAuth: false,
   },
   getters: {
     userInfoGetter(state) {
-      return {
-        id: state.id,
-        avatar: state.avatar,
-        nickname: state.nickname,
-        username: state.username,
-      };
+      return state.userInfo;
     },
     checkAuthGetter(state) {
       return state.isAuth;
+    },
+    authKeyGetter(state) {
+      return state.userInfo.key;
     },
   },
 };

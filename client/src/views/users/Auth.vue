@@ -1,11 +1,7 @@
 <template>
   <div class="flex flex_col">
     <span
-      class="
-        text text_white text_biggest text_bold text_center
-        flex_j_c flex_al_c
-        mg_b_2
-      "
+      class="text text_white text_biggest text_bold text_center flex_j_c flex_al_c mg_b_2"
       >Авторизация</span
     >
     <form class="flex flex_j_s flex_al_c flex_col" @submit.prevent="auth">
@@ -30,7 +26,7 @@
 
 <script>
 export default {
-  name: "auth-view",
+  name: "AuthView",
   data() {
     return {
       userLogin: "",
@@ -39,12 +35,16 @@ export default {
   },
   methods: {
     auth: function () {
-      let userLogin = this.userLogin;
-      let userPass = this.userPass;
-      this.$store
-        .dispatch("userAuthAction", { userLogin, userPass })
-        .then(() => this.$router.push("/"))
-        .catch((err) => console.log(err));
+      let userInfo = {
+        login: this.userLogin,
+        password: this.userPass,
+      };
+      try {
+        this.$store.dispatch("userAuthAction", userInfo);
+        this.$router.push("/");
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 };

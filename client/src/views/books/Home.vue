@@ -16,7 +16,7 @@ export default {
     BookComponent,
   },
   computed: mapGetters(["bookGetByIDGetter"]),
-  mounted() {
+  created() {
     this.getBook();
   },
   methods: {
@@ -27,5 +27,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

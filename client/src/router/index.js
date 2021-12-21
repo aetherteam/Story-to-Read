@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import Auth from "../views/users/Auth.vue";
-import BookPage from "../views/books/Home.vue"
+import Registration from "../views/users/Registration.vue";
+import BookPage from "../views/books/Home.vue";
 
 const routes = [
   {
@@ -15,6 +16,12 @@ const routes = [
     name: "AuthPage",
     meta: { layout: "default" },
     component: Auth,
+  },
+  {
+    path: "/registration",
+    name: "RegistrationPage",
+    meta: { layout: "default" },
+    component: Registration,
   },
   {
     path: "/book/:id",

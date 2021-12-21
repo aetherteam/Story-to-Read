@@ -22,10 +22,9 @@ export default {
     defaultLayout,
     mainLayout,
   },
-  mounted() {
+  beforeMount() {
     let authKey = Cookies.get("key"),
       userID = Cookies.get("id");
-    console.log(authKey, userID);
     if (typeof authKey != "undefined" && authKey !== null) {
       this.$store.dispatch("userConfirmAuthAction", { authKey, userID });
       this.$store.dispatch("userInfoGetAction", userID);

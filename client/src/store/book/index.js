@@ -24,16 +24,64 @@ export default {
   },
   mutations: {
     bookGetAllMutation(state, books) {
-      state.books = books;
+      state.books = { ...books };
       state.books_count = books.length;
     },
     bookGetByIDMutation(state, book) {
-      state.bookOne = book;
+      state.bookOne = { ...book };
     },
   },
   state: {
-    books: [],
-    bookOne: [],
+    books: [
+      {
+        _id: String,
+        id: Number,
+        name: String,
+        author: {
+          _id: String,
+          avatar: String,
+          id: Number,
+          mickname: String,
+          username: String,
+        },
+        chapters: {},
+        cover: String,
+        description: String,
+        genres: [
+          {
+            _id: Number,
+            title: String,
+          },
+        ],
+        lastUpdate: Number,
+        likes: Number,
+        timestamp: Number,
+      },
+    ],
+    bookOne: {
+      _id: String,
+      id: Number,
+      name: String,
+      author: {
+        _id: String,
+        avatar: String,
+        id: Number,
+        mickname: String,
+        username: String,
+      },
+      chapters: {},
+      cover: String,
+      description: String,
+      genres: [
+        {
+          _id: Number,
+          title: String,
+        },
+      ],
+      lastUpdate: Number,
+      likes: Number,
+      timestamp: Number,
+    },
     books_count: 0,
   },
   getters: {
