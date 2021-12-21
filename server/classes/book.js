@@ -28,8 +28,8 @@ module.exports = {
             );
         }
         // const id = await getIDForNewEntry("books");
-        global.cachedIndexes[books]++;
-        const id = global.cachedIndexes[books];
+        global.cachedIndexes["books"]++;
+        const id = global.cachedIndexes["books"];
         
         const book = {
             id,
@@ -168,7 +168,7 @@ module.exports = {
             return results.error("ArrangeType is not defined!", 400);
         }
 
-        const cursor = booksCollection.find({}, { sort });
+        const cursor = await booksCollection.find({}, { sort });
 
         let books = [];
         let i = 1;
@@ -179,8 +179,6 @@ module.exports = {
             }
             i++;
         });
-
-        console.log(books);
 
         let cache = {
             genres: {},

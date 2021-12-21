@@ -36,7 +36,6 @@ module.exports = {
         return false;
     },
     bookDescription: function (description) {
-        console.log("[Validation] description is too long");
         return description.length < 1000;
     },
     chapterContent: function (chapterContent) {
