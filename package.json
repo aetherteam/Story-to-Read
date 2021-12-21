@@ -6,7 +6,7 @@
   "scripts": {
     "herstart-server": "cd server && npm run herstart",
     "herstart-client": "cd client && npm run herstart",
-    "client-build": "cd client && npm run build"
+    "client-build": "cd client && npm i && npm run build"
   },
   "repository": {
     "type": "git",
