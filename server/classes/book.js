@@ -122,7 +122,7 @@ module.exports = {
         const chaptersCollection = global.mongo.collection("chapters");
         const booksCollection = global.mongo.collection("books");
 
-        let book = await booksCollection.findOne({ id: parseInt(bookID) });
+        let book = await booksCollection.findOne({ id: parseInt(bookID) }, { projection: {_id: 0} });
 
         if (!book) {
             return results.error("Book not found", 400);
@@ -177,6 +177,8 @@ module.exports = {
             i++;
         });
 
+        console.log(books);
+
         let cache = {
             genres: {},
             authors: {},
@@ -196,6 +198,7 @@ module.exports = {
                 }
             });
 
+
             book.cover = getImagePath("cover", book.id);
 
             let author;
@@ -208,7 +211,6 @@ module.exports = {
 
             book.genres = genres;
             book.author = author.data;
-
             result.push(book);
         }
 

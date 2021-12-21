@@ -2,7 +2,6 @@ const Book = require("../classes/book.js");
 
 async function routes(fastify, options) {
     fastify.post("/book/create", async (request, reply) => {
-        console.time("Book create executed in");
         const rp = request.body;
         console.log(rp)
         const result = await Book.create(
@@ -18,7 +17,6 @@ async function routes(fastify, options) {
         } else {
             reply.code(result.code).send({ result });
         }
-        console.timeEnd("Book create executed in");
     });
     fastify.get("/book/getOne", async (request, reply) => {
         const rp = request.query;
@@ -50,6 +48,7 @@ async function routes(fastify, options) {
     });
     fastify.get("/book/get", async (request, reply) => {
         console.time("Book get executed in");
+        console.log(request.query)
         const result = await Book.get(
             request.query.arrange,
             request.query.shift,

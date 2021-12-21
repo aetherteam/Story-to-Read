@@ -25,6 +25,7 @@ fastify.register(require("fastify-cors"), {
 });
 fastify.addHook("preValidation", async (request, reply) => {
     if (!SKIP_USER_KEY_CHECKING.includes(request.routerPath)) {
+        console.log("[HOOK] GETTING USER ID FROM KEY")
         if (request.headers["content-type"].match(/(multipart\/form-data;*)/g)) {
             const usersCollection = global.mongo.collection("users");
             
@@ -46,9 +47,10 @@ fastify.addHook("preValidation", async (request, reply) => {
             const user = await usersCollection.findOne({
                 key: request.body.key,
             });
+            console.log("[HOOK] User", JSON.stringify(user), "with key", request.body.key, "(POST)")
 
             if (user) {
-                return { userID: parseInt(user.id), ...request.body };
+                request.body = { userID: parseInt(user.id), ...request.body };
             } else {
                 reply
                     .code(444)
@@ -60,6 +62,7 @@ fastify.addHook("preValidation", async (request, reply) => {
             const user = await usersCollection.findOne({
                 key: request.query.key,
             });
+            console.log("[HOOK] User", JSON.stringify(user), "with key ", request.query.key), "(GET)"
 
             if (user) {
                 request.query = { userID: parseInt(user.id), ...request.query };
