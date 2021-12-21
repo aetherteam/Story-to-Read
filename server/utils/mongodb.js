@@ -30,12 +30,12 @@ module.exports = {
         let commentsLastIndex = await db.collection('comments').findOne({}, { sort: ["id", "desc"] });
 
         global.cachedIndexes = {
-            'users': usersLastIndex,
-            'books': booksLastIndex,
-            'chapters': chaptersLastIndex,
-            'comments': commentsLastIndex
+            'users': usersLastIndex ? usersLastIndex.id : 10000001,
+            'books': booksLastIndex ? booksLastIndex.id : 10000001,
+            'chapters': chaptersLastIndex ? chaptersLastIndex.id : 10000001,
+            'comments': commentsLastIndex ? commentsLastIndex.id : 10000001,
         }
-
+        console.log("Cached Indexes:",global.cachedIndexes)
         console.log("[MongoDB] Indexes cached");
     }
 };
