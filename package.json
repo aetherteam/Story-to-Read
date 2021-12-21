@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "herstart-server": "cd server && npm run herstart",
-    "herstart-client": "cd client/was && npm run herstart"
+    "herstart-client": "cd client && npm run herstart",
+    "client-build": "cd client && npm run build"
   },
   "repository": {
     "type": "git",
