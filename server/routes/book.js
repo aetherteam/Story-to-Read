@@ -13,9 +13,9 @@ async function routes(fastify, options) {
         );
 
         if (result.success) {
-            reply.code(200).send({ result });
+            reply.code(200).send(result);
         } else {
-            reply.code(result.code).send({ result });
+            reply.code(result.code).send(result);
         }
     });
     fastify.get("/book/getOne", async (request, reply) => {
@@ -24,9 +24,9 @@ async function routes(fastify, options) {
         const result = await Book.getOne(rp.bookID);
 
         if (result.success) {
-            reply.code(200).send({ result });
+            reply.code(200).send(result);
         } else {
-            reply.code(result.code).send({ result });
+            reply.code(result.code).send(result);
         }
     });
     fastify.post("/book/addChapter", async (request, reply) => {
@@ -40,9 +40,9 @@ async function routes(fastify, options) {
         );
 
         if (result.success) {
-            reply.code(200).send({ result });
+            reply.code(200).send(result);
         } else {
-            reply.code(result.code).send({ result });
+            reply.code(result.code).send(result);
         }
         console.timeEnd("Book addChapter executed in");
     });
@@ -56,9 +56,9 @@ async function routes(fastify, options) {
         );
 
         if (result.success) {
-            reply.code(200).send({ result });
+            reply.code(200).send(result);
         } else {
-            reply.code(result.code).send({ result });
+            reply.code(result.code).send(result);
         }
         console.timeEnd("Book get executed in");
     });
@@ -68,9 +68,9 @@ async function routes(fastify, options) {
         const result = await Book.like(rp.userID, rp.bookID);
         
         if (result.success) {
-            reply.code(200).send({ result });
+            reply.code(200).send(result);
         } else {
-            reply.code(result.code).send({ result });
+            reply.code(result.code).send(result);
         }
     });
 }

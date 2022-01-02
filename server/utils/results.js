@@ -2,27 +2,27 @@ module.exports = {
   error: function (text, code) {
     console.error(text);
     return {
-      success: false,
       code,
       error: text,
+      success: false
     };
   },
   unexpectedError: function () {
     console.error(text);
     return {
-      success: false,
       code: 500,
-      error: "Unexpected error"
+      error: "Unexpected error",
+      success: false
     };
   },
   successWithData: function (data) {
     return {
-      success: true,
       code: 200,
-      data
+      data,
+      success: true
     };
   },
   success: function () {
-    return { success: true, code: 200 };
+    return {success: true, code: 200 };
   },
 };

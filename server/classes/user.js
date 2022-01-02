@@ -13,6 +13,8 @@ const { encrypt } = require("../utils/encryption");
 module.exports = {
     create: async function (username, nickname, email, password, tempUser) {
         const usersCollection = global.mongo.collection("users");
+        const userLikedCount = global.mongo.collection("userLikedCount");
+
         const userID = tempUser.id;
         const userKey = tempUser.key;
         console.log("tempUser", tempUser);
@@ -41,7 +43,7 @@ module.exports = {
             await usersCollection.updateOne({ id: userID }, { $set: user });
             const userForReturn = await module.exports.get(userID);
             console.log("userForReturn", userForReturn);
-
+            createUserLikedCountDocument(userID);
             return results.successWithData(userForReturn.data);
         } catch {
             return results.error("Unexpected error", 500);
@@ -54,7 +56,7 @@ module.exports = {
             const user = await usersCollection.findOne({
                 $or: [{ nickname: query.nickname }, { email: query.email }],
             });
-    
+
             console.log("user", user);
             if (user) {
                 console.log(
@@ -154,8 +156,8 @@ module.exports = {
     },
     createTempUser: async function () {
         const usersCollection = global.mongo.collection("users");
-        global.cachedIndexes['users']
-        const userID = global.cachedIndexes['users'];
+        global.cachedIndexes["users"]++;
+        const userID = global.cachedIndexes["users"];
         console.log("Temp user ID", userID);
         const user = {
             id: userID,
@@ -201,3 +203,13 @@ const restrictedProjectionFields = [
 ];
 
 const CONSTANT_USER_FIELDS = ["key", "isRegistered", "confirmed", "id"];
+
+async function createUserLikedCountDocument(userID) {
+    const userLikedCount = global.mongo.collection("userLikedCount");
+
+    await userLikedCount.insertOne({
+        userID,
+        likes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+        // TODO: update list when user finished his registration and chosed his favorite genres
+    });
+}

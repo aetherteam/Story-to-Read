@@ -12,11 +12,6 @@ mongodb.createGlobalConnection().then(() => {
     mongodb.cacheIndexes();
 })
 
-// Content Parser
-// fastify.register(require("fastify-formbody"), {
-//     parser: (str) => qs.parse(str),
-// });
-
 fastify.register(require("fastify-multipart"), {
     attachFieldsToBody: true,
     limits: { fileSize: 3000000 },
@@ -49,7 +44,7 @@ fastify.addHook("preValidation", async (request, reply) => {
             const user = await usersCollection.findOne({
                 key: request.body.key,
             });
-            console.log("[HOOK] User", JSON.stringify(user), "with key", request.body.key, "(POST)")
+            console.log("[HOOK] User", user.id, "with key", request.body.key, "(POST)")
 
             if (user) {
                 request.body = { userID: parseInt(user.id), ...request.body };
@@ -64,7 +59,7 @@ fastify.addHook("preValidation", async (request, reply) => {
             const user = await usersCollection.findOne({
                 key: request.query.key,
             });
-            console.log("[HOOK] User", JSON.stringify(user), "with key ", request.query.key), "(GET)"
+            console.log("[HOOK] User", user.id, "with key ", request.query.key), "(GET)"
 
             if (user) {
                 request.query = { userID: parseInt(user.id), ...request.query };

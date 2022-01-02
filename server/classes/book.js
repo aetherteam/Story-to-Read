@@ -1,9 +1,9 @@
-const fs = require("fs");
-const validation = require("../utils/validation");
+const validation = require("../utils/validation.js");
 const Genres = require("./genres.js");
 const User = require("./user.js");
 const results = require("../utils/results.js");
 const getImagePath = require("../utils/getImagePath.js");
+const Analytics = require("./analytics.js");
 
 module.exports = {
     create: async function (
@@ -20,17 +20,19 @@ module.exports = {
             return results.error("Description is too long (>1000)", 400);
         }
         if (!validation.basic(name)) {
-            console.error("[Book] Name cannot be blank or be more than 150 symbols");
+            console.error(
+                "[Book] Name cannot be blank or be more than 150 symbols"
+            );
 
             return results.error(
                 "Name cannot be blank or be more than 150 symbols",
                 400
             );
         }
-        // const id = await getIDForNewEntry("books");
+
         global.cachedIndexes["books"]++;
         const id = global.cachedIndexes["books"];
-        
+
         const book = {
             id,
             name,
@@ -41,8 +43,9 @@ module.exports = {
             timestamp: Date.now(),
             lastUpdate: Date.now(),
             likes: 0,
+            status: "inProgress",
         };
-        
+
         console.log("[Book] creating", book);
         const result = booksCollection.insertOne(book);
 
@@ -52,6 +55,17 @@ module.exports = {
         }
 
         return results.error("Unexpected error", 500);
+    },
+    changeStatus: async function (bookID, status) {
+        const booksCollection = global.mongo.collection("books");
+        const book = await booksCollection.findOne({ id: parseInt(bookID) });
+        const statuses = require("../utils/statuses.json");
+        //TODO: finish
+        if (!["inProgress", "finished", "abandoned"].includes(status)) {
+            return results.error("Wrong status", 400);
+        } else {
+
+        }
     },
     checkOwnership: async function (bookID, userID) {
         const booksCollection = global.mongo.collection("books");
@@ -82,8 +96,8 @@ module.exports = {
             return results.error("Forbidden", 403);
         }
 
-        global.cachedIndexes['chapters']++;
-        const chapterID = global.cachedIndexes['chapters'];
+        global.cachedIndexes["chapters"]++;
+        const chapterID = global.cachedIndexes["chapters"];
 
         const chapter = {
             id: chapterID,
@@ -92,6 +106,7 @@ module.exports = {
             content,
             author,
             timestamp: Date.now(),
+            isPublished: false,
         };
 
         if (await chaptersCollection.insertOne(chapter)) {
@@ -121,11 +136,45 @@ module.exports = {
 
         return chapter;
     },
+    publicshChapter: async function (chapterID) {
+        const booksCollection = global.mongo.collection("books");
+        const chaptersCollection = global.mongo.collection("chapters");
+        const doUserHaveRights = await module.exports.checkOwnership(
+            bookID,
+            author
+        );
+
+        if (!doUserHaveRights) {
+            console.error(
+                "[Chapter] User have no rights to create chapter for",
+                bookID
+            );
+            return results.error("Forbidden", 403);
+        }
+
+        const chapter = chaptersCollection.getOne({ id: chapterID });
+        if (!chapter) {
+            return results.error("Chapter is not exists", 400);
+        }
+
+        const result = await chaptersCollection.updateOne(
+            { id: chapterID },
+            { $set: { isPublished: true } }
+        );
+
+        if (result) {
+            return results.success();
+        }
+        return results.unexpectedError();
+    },
     getOne: async function (bookID) {
         const chaptersCollection = global.mongo.collection("chapters");
         const booksCollection = global.mongo.collection("books");
 
-        let book = await booksCollection.findOne({ id: parseInt(bookID) }, { projection: {_id: 0} });
+        let book = await booksCollection.findOne(
+            { id: parseInt(bookID) },
+            { projection: { _id: 0 } }
+        );
 
         if (!book) {
             return results.error("Book not found", 400);
@@ -199,7 +248,6 @@ module.exports = {
                 }
             });
 
-
             book.cover = getImagePath("cover", book.id);
 
             let author;
@@ -225,6 +273,7 @@ module.exports = {
             userID,
             bookID,
         });
+        const book = await booksCollection.findOne({ id: bookID });
 
         let result;
         if (!doUserLiked) {
@@ -234,6 +283,7 @@ module.exports = {
                     { id: bookID },
                     { $inc: { likes: 1 } }
                 );
+                Analytics.updateUserLikes(userID, bookID, "like");
                 return results.successWithData({ action: "like" });
             }
         } else {
@@ -241,9 +291,10 @@ module.exports = {
             if (result) {
                 await booksCollection.updateOne(
                     { id: bookID },
-                    { $inc: { likes: 1 } }
+                    { $inc: { likes: -1 } }
                 );
-                return results.successWithData({ action: "unlike" });
+                Analytics.updateUserLikes(userID, bookID, "dislike");
+                return results.successWithData({ action: "dislike" });
             }
         }
         return results.unexpectedError();

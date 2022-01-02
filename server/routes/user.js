@@ -8,29 +8,28 @@ async function routes(fastify, options) {
         let projection;
         if (rp?.projection) {
             projection = request.query.projection.match(/([a-z]+)/g);
-        }
-        else projection = null;
+        } else projection = null;
 
-        const user = await User.get(rp.userID, projection);
+        const result = await User.get(rp.userID, projection);
 
-        if (user.success) {
-            reply.code(200).send({ user });
-        } else reply.code(user.code).send({ user });
+        if (result.success) {
+            reply.code(200).send(result);
+        } else reply.code(result.code).send(result);
     });
     fastify.post("/user/createTempUser", async (request, reply) => {
-        const user = await User.createTempUser();
-        if (user.success) {
-            reply.code(200).send({ user });
-        } else reply.code(user.code).send({ user });
+        const result = await User.createTempUser();
+        if (result.success) {
+            reply.code(200).send(result);
+        } else reply.code(result.code).send(result);
     });
     fastify.post("/user/edit", async (request, reply) => {
         const rp = request.body;
 
-        const user = await User.edit(rp.userID, rp.updated);
+        const result = await User.edit(rp.userID, rp.updated);
 
-        if (user.success) {
-            reply.code(200).send({ user });
-        } else reply.code(user.code).send({ user });
+        if (result.success) {
+            reply.code(200).send(result);
+        } else reply.code(result.code).send(result);
     });
 }
 

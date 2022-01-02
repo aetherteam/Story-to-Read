@@ -14,9 +14,9 @@ async function routes(fastify, options) {
         );
 
         if (result.success) {
-            reply.code(200).send({ result });
+            reply.code(200).send(result);
         } else {
-            reply.code(result.code).send({ result });
+            reply.code(result.code).send(result);
         }
     });
     fastify.get("/auth/login", async (request, reply) => {
@@ -24,9 +24,9 @@ async function routes(fastify, options) {
         const result = await auth.login(rp.login, rp.password);
 
         if (result.success) {
-            reply.code(200).send({ result });
+            reply.code(200).send(result);
         } else {
-            reply.code(result.code).send({ result });
+            reply.code(result.code).send(result);
         }
     });
 }
