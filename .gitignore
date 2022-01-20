@@ -4,8 +4,8 @@
 # Dev dirs
 */node_modules
 */uploads/*
-*/server/utils/ca-certificate.crt
-*/server/utils/config.json
+ca-certificate.crt
+config.json
 
 # Dev Files
 */public
